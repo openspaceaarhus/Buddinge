@@ -102,7 +102,6 @@ module states {
                     }
                 }
             }
-b
                         
             this.emitter = this.game.add.emitter(0, 0, 100);            
             this.emitter.makeParticles("smoke");

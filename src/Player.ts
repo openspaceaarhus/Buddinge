@@ -3,12 +3,14 @@
 module states {
     export class Player extends Phaser.Sprite {
         cable		: Phaser.Group;
-	last		: Phaser.Sprite;
-        MAX_SPEED	: number = 10;
+        MAX_SPEED	: number = 30;
         ROTATION_SPEED	: number = 5;
         SIZE		: Phaser.Point = new Phaser.Point(32, 20);
 	ps              : PlayState;
         cableUsed	: number;
+	last_segment    : Phaser.Sprite;
+	last_constraint  : any; //Phaser.Physics.P2.Constraint;
+	SEGMENT_SIZE    : number = 5;
 
         constructor(ps: PlayState, x: number, y: number) {
             super(ps.game, x, y, "car");
@@ -19,7 +21,7 @@ module states {
             body.setRectangle(this.SIZE.x, this.SIZE.y);
             body.mass = 1;
             game.add.existing(this);
-            this.add_cable(50);
+            this.add_cable(1);
             this.cableUsed = 100;
         }
 
@@ -58,34 +60,58 @@ module states {
                 this.body.damping = 0.7;
             }
 
+	    if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
+		this.add_segment();
+	    }
+
         }
 
 
+	add_segment() {
+	    var p2 = this.game.physics.p2;
+	    // remove last constrain between this.last_segment and car
+	    if(this.last_constraint)
+		p2.removeConstraint(this.last_constraint);
+
+	    // create a new segment Sprite
+	    var x = this.body.x + Math.cos(this.rotation + 3.14) * this.SEGMENT_SIZE;
+	    var y = this.body.y + Math.sin(this.rotation + 3.14) * this.SEGMENT_SIZE;
+	    
+	    var l = this.cable.create( x, y, 'cable');
+	    var body:Phaser.Physics.P2.Body = l.body;
+	    body.setRectangle(this.SEGMENT_SIZE, this.SEGMENT_SIZE);
+	    body.mass = .001;
+	    body.damping = .7;
+	    body.setMaterial(this.ps.CABLE_MATERIAL);
+	
+	    // add constrain between new segment and car + last segment and new segment
+	    if(this != this.last_segment) 
+		var constraint  = this.game.physics.p2.createDistanceConstraint(l, this.last_segment, this.SEGMENT_SIZE, 1000);
+	    this.last_constraint = this.game.physics.p2.createDistanceConstraint(this, this.last_segment, this.SEGMENT_SIZE, 1000);
+
+	    // update last constrain and last segment
+	    this.last_segment = l;
+	}
+
+	remove_segment() {
+
+	}
+	
 	add_cable(N : number)  {
             this.cable = this.game.add.group();
 	    this.cable.enableBody = true;
 	    this.cable.physicsBodyType = Phaser.Physics.P2JS;
 
-
-	    var last : Phaser.Sprite = this;
-	    var s  = 6;
+	    this.last_segment  = this;
+	    this.last_constraint = null;
+	    
 	    for(var i : number = 0; i < N; i++) {
-		var x = this.body.x + Math.cos(this.rotation + 3.14) * s;
-		var y = this.body.y + Math.sin(this.rotation + 3.14) * s;
-		var l = this.cable.create( x, y, 'cable');
-		var body:Phaser.Physics.P2.Body = l.body;
-		body.setRectangle(s,s);
-		body.mass = .001;
-		body.damping = .1;
-		body.setMaterial(this.ps.CABLE_MATERIAL);
-		var constraint = this.game.physics.p2.createDistanceConstraint(l, last, s, 10);
-		this.cable.add(l);
-		last = l;
-		if(i == (N-1)) {
+		this.add_segment();
+		if (0 == i) {
+		    var body:Phaser.Physics.P2.Body = this.last_segment.body;
 		    body.static = true;
 		}
 	    }
-
 	}
     }
 }
