@@ -19,7 +19,6 @@ module states {
         
         create() {
             this.game.stage.backgroundColor = 0x333333;
-            
             var cars = [];
 
             this.game.physics.startSystem(Phaser.Physics.P2JS);
@@ -60,7 +59,7 @@ module states {
                 }
             }
             
-            this.player = new Player(this.game, 100, 100);
+            this.player = new Player(this.game, 300, 300);
             
             var body:Phaser.Physics.P2.Body = this.player.body;
             body.setCollisionGroup(playerCollisionGroup);
