@@ -28,6 +28,7 @@ module states {
             this.game.load.image("car", "assets/car.png");
             this.game.load.image("park", "assets/park.png");
             this.game.load.image("smoke", "assets/smoke.png");
+            this.game.load.image("cableUsedIcon", "assets/cableIcon.png");
             
             //this.game.load.audio("ding", "assets/sound/sound_haleding.wav");
             this.game.load.audio("collide", "assets/sound/sound_kollision.wav");
@@ -102,7 +103,6 @@ module states {
                     }
                 }
             }
-b
                         
             this.emitter = this.game.add.emitter(0, 0, 100);            
             this.emitter.makeParticles("smoke");
@@ -127,7 +127,10 @@ b
             */
             
             //GUI Stuff
-            this.cableUsedText = createText(0, 0, "#FFFFFF", 20, "Cable left: " + String(200 - this.player.cableUsed) + "m");
+            var cableIcon: Phaser.Sprite = game.add.sprite(0, 0, "cableUsedIcon");
+            cableIcon.scale.setTo(2, 2);
+            cableIcon.smoothed = false;
+            this.cableUsedText = createText(32, -2, "#FFFFFF", 28, String(200 - this.player.cableUsed) + "m");
             this.cableUsedText.setShadow(-5, -5, 'rgba(0,0,0,0.5)', 5);
             this.cableUsedText.stroke = '#000000';
             this.cableUsedText.strokeThickness = 3;
@@ -165,7 +168,7 @@ b
             }
 
             //Update the GUI
-            this.cableUsedText.text = "Cable left: " + String(200 - this.player.cableUsed) + "m";
+            this.cableUsedText.text = String(200 - this.player.cableUsed) + "m";
         }
     }
     function createText(x: number, y: number, color: Phaser.Color, size: number, text: string)

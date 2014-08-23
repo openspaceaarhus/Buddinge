@@ -8,7 +8,7 @@ module states {
         ROTATION_SPEED	: number = 5;
         SIZE		: Phaser.Point = new Phaser.Point(32, 20);
 	ps              : PlayState;
-        cableUsed	: number;
+        cableUsed	: number = 0;
 
         constructor(ps: PlayState, x: number, y: number) {
             super(ps.game, x, y, "car");
@@ -20,7 +20,6 @@ module states {
             body.mass = 1;
             game.add.existing(this);
             this.add_cable(50);
-            this.cableUsed = 100;
         }
 
         update() 
@@ -62,7 +61,9 @@ module states {
 
 
 	add_cable(N : number)  {
-            this.cable = this.game.add.group();
+        this.cableUsed = N / 2.0;
+        
+        this.cable = this.game.add.group();
 	    this.cable.enableBody = true;
 	    this.cable.physicsBodyType = Phaser.Physics.P2JS;
 
