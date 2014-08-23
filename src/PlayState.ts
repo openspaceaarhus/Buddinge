@@ -60,8 +60,13 @@ module states {
         
         preload() {
             this.game.load.image("house1", "assets/house1.png");            
+            this.game.load.image("house2", "assets/house2.png");            
+
+            this.game.load.image("park1", "assets/park.png");
+            this.game.load.image("park2", "assets/park2.png");
+
             this.game.load.image("car", "assets/car.png");
-            this.game.load.image("park", "assets/park.png");
+            
             this.game.load.image("smoke", "assets/smoke.png");
             this.game.load.image("cableUsedIcon", "assets/cableIcon.png");
             this.game.load.image("asphalt", "assets/asphalt.png");
@@ -105,11 +110,11 @@ module states {
             this.motorSound = this.game.add.sound("motorsound");            
             this.nextMotorPlay = game.time.time;
             this.nextPuff = game.time.time;
-            
-            for (var y = 50; y < game.height; y += this.HOUSE_SPACE) {
-                for (var x = 50; x < game.width; x += this.HOUSE_SPACE) {
+
+            for (var y = 50; y <= game.height; y += this.HOUSE_SPACE) {
+                for (var x = 30; x <= game.width; x += this.HOUSE_SPACE) {
                     var row = (y - 50) / this.HOUSE_SPACE;
-                    var col = (x - 50) / this.HOUSE_SPACE;
+                    var col = (x - 30) / this.HOUSE_SPACE;
                     
                     if ((row % 2 == 1 && col % 2 == 1)) {
                         continue;
@@ -118,12 +123,14 @@ module states {
                     }
                     
                     if (Math.random() < 0.35) {
-                        var park:Phaser.Sprite = game.add.sprite(x, y, "park");
+                        var parkGfx = Math.random() > 0.75 ? "park1" : "park2";
+                        var park:Phaser.Sprite = game.add.sprite(x, y, parkGfx);
                         park.anchor.setTo(0.5, 0.5);
                         
                         
                     } else {
-                        var sprite = houseGroup.create(x, y, "house1");
+                        var houseGfx = Math.random() > 0.25 ? "house1" : "house2";
+                        var sprite = houseGroup.create(x, y, houseGfx);
                         var spriteBody:Phaser.Physics.P2.Body = sprite.body;
 			
                         spriteBody.setRectangle(this.HOUSE_SIZE, this.HOUSE_SIZE);
@@ -205,8 +212,8 @@ module states {
                 }
                 
                 if (this.game.time.time > this.nextPuff) {
-                    this.emitter.x = this.player.x + Math.cos(this.player.rotation) * -this.player.SIZE.x / 2.0 + Math.random() * 10 - 5;
-                    this.emitter.y = this.player.y + Math.sin(this.player.rotation) * -this.player.SIZE.y / 2.0 + Math.random() * 10 - 5;
+                    this.emitter.x = this.player.x + Math.cos(this.player.rotation) * -this.player.SIZE.x / 2.0 + Math.random() * 6 - 3;
+                    this.emitter.y = this.player.y + Math.sin(this.player.rotation) * -this.player.SIZE.y / 2.0 + Math.random() * 6 - 3;
                     this.emitter.start(true, 1000, null, 10);                    
                     this.nextPuff = this.game.time.time + 100;
                 }
