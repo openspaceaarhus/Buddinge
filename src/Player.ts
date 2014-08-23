@@ -5,6 +5,8 @@ module states {
         MAX_SPEED: number = 10;
         ROTATION_SPEED: number = 5;
         SIZE: Phaser.Point = new Phaser.Point(32, 20);
+        
+        
         constructor(game: Phaser.Game, x: number, y: number) {
             super(game, x, y, "car");
             this.anchor.setTo(0.5, 0.5);

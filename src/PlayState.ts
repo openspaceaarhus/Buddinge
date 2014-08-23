@@ -4,7 +4,7 @@ module states {
     
     export class PlayState extends Phaser.State {
         HOUSE_SIZE: number = 64;
-        HOUSE_SPACE: number = 150;
+        HOUSE_SPACE: number = 76;
 
         emitter: Phaser.Particles.Arcade.Emitter;
         player: Player;   
@@ -14,11 +14,13 @@ module states {
         motorSound: Phaser.Sound;
         
         nextMotorPlay: number;
+        nextPuff: number;
         
         preload() {
             this.game.load.image("house1", "assets/house1.png");            
             this.game.load.image("car", "assets/car.png");
             this.game.load.image("park", "assets/park.png");
+            this.game.load.image("smoke", "assets/smoke.png");
             
             //this.game.load.audio("ding", "assets/sound/sound_haleding.wav");
             this.game.load.audio("collide", "assets/sound/sound_kollision.wav");
@@ -46,12 +48,22 @@ module states {
             this.game.physics.p2.friction = 100;
             
             this.collideSound = this.game.add.sound("collide");
-            this.motorSound = this.game.add.sound("motorsound");
-            
+            this.motorSound = this.game.add.sound("motorsound");            
             this.nextMotorPlay = game.time.time;
+            this.nextPuff = game.time.time;
                     
             for (var y = 50; y < game.height; y += this.HOUSE_SPACE) {
                 for (var x = 50; x < game.width; x += this.HOUSE_SPACE) {
+                    var row = (y - 50) / this.HOUSE_SPACE;
+                    var col = (x - 50) / this.HOUSE_SPACE;
+                    
+                    if ((row % 2 == 1 && col % 2 == 1)) {
+                        continue;
+                    } else if ((row % 2 == 1 || col % 2 == 1) && Math.random() < 0.5) {
+                        continue;
+                    }
+                    
+                    
                     if (Math.random() < 0.25) {
                         var sprite = houseGroup.create(x, y, "park");
                     } else {
@@ -71,36 +83,24 @@ module states {
                     }
                 }
             }
-            
-            var offset = 50 + this.HOUSE_SIZE;
-            
-            var sprite = houseGroup.create(offset, offset, "park");
-            
-            
-            
+                        
+            this.emitter = this.game.add.emitter(0, 0, 100);            
+            this.emitter.makeParticles("smoke");
+            this.emitter.gravity = 0;
+            this.emitter.setScale(0.1, 1, 0.1, 1, 1000, Phaser.Easing.Cubic.InOut, false);  
+            this.emitter.setAlpha(0.25, 0, 2000);
+            this.emitter.setXSpeed(-25, 25);
+            this.emitter.setYSpeed(-25, 25);
+
             this.player = new Player(this.game, 300, 300);
             
             var body:Phaser.Physics.P2.Body = this.player.body;
             body.setCollisionGroup(playerCollisionGroup);
             body.collides(houseCollisionGroup, this.carHitHouse, this);
 
-            /*
-            this.emitter = this.game.add.emitter(0, 0, 100);            
-            this.emitter.makeParticles("particle");
-            this.emitter.gravity = 200;
-            this.emitter.setScale(1, 4, 1, 4, 1000, Phaser.Easing.Cubic.InOut, false);             
-            this.game.input.onDown.add(this.burst, this);
-            */
+
         }
-        
-        /*
-        burst(pointer) {
-            this.emitter.x = pointer.x;
-            this.emitter.y = pointer.y;
-            this.emitter.start(true, 2000, null, 10);
-        }
-        */
-             
+                     
         carHitHouse(body1, body2) {
             this.collideSound.play();
             //console.log("Hit");
@@ -109,10 +109,17 @@ module states {
         }
         
         update() {
-            if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+            if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP) || this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
                 if (this.game.time.time > this.nextMotorPlay) {
                     this.nextMotorPlay = this.game.time.time + 700;
-                    this.motorSound.play();
+                    this.motorSound.play();                    
+                }
+                
+                if (this.game.time.time > this.nextPuff) {
+                    this.emitter.x = this.player.x + Math.random() * 10 - 5;
+                    this.emitter.y = this.player.y + Math.random() * 10 - 5;
+                    this.emitter.start(true, 1000, null, 10);                    
+                    this.nextPuff = this.game.time.time + 100;
                 }
             } else {
                 this.motorSound.stop();
