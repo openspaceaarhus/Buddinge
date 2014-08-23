@@ -2,7 +2,8 @@
 /// <reference path="Player.ts"/>
 module states {
     
-    export class PlayState extends Phaser.State {
+    export class PlayState extends Phaser.State {    
+        
         HOUSE_SIZE: number = 64;
         HOUSE_SPACE: number = 76;
 
@@ -15,6 +16,8 @@ module states {
         
         nextMotorPlay: number;
         nextPuff: number;
+        
+        cableUsedText: Phaser.Text;
         
         preload() {
             this.game.load.image("house1", "assets/house1.png");            
@@ -98,8 +101,27 @@ module states {
             body.setCollisionGroup(playerCollisionGroup);
             body.collides(houseCollisionGroup, this.carHitHouse, this);
 
-
+            /*
+            this.emitter = this.game.add.emitter(0, 0, 100);            
+            this.emitter.makeParticles("particle");
+            this.emitter.gravity = 200;
+            this.emitter.setScale(1, 4, 1, 4, 1000, Phaser.Easing.Cubic.InOut, false);             
+            this.game.input.onDown.add(this.burst, this);
+            */
+            
+            //GUI Stuff
+            this.cableUsedText = createText(0, 0, "#FFFFFF", 20, "Cable left: " + String(200 - this.player.cableUsed) + "m");
+            this.cableUsedText.setShadow(-5, -5, 'rgba(0,0,0,0.5)', 5);
+            this.cableUsedText.stroke = '#000000';
+            this.cableUsedText.strokeThickness = 3;
         }
+        
+        /*
+        burst(pointer) {
+            this.emitter.x = pointer.x;
+            this.emitter.y = pointer.y;
+            this.emitter.start(true, 2000, null, 10);
+        }*/
                      
         carHitHouse(body1, body2) {
             this.collideSound.play();
@@ -116,8 +138,8 @@ module states {
                 }
                 
                 if (this.game.time.time > this.nextPuff) {
-                    this.emitter.x = this.player.x + Math.random() * 10 - 5;
-                    this.emitter.y = this.player.y + Math.random() * 10 - 5;
+                    this.emitter.x = this.player.x + Math.cos(this.player.rotation) * -this.player.SIZE.x / 2.0 + Math.random() * 10 - 5;
+                    this.emitter.y = this.player.y + Math.sin(this.player.rotation) * -this.player.SIZE.y / 2.0 + Math.random() * 10 - 5;
                     this.emitter.start(true, 1000, null, 10);                    
                     this.nextPuff = this.game.time.time + 100;
                 }
@@ -129,7 +151,17 @@ module states {
                 sprite.body.angularVelocity = 0;
                 sprite.body.angle = 0;
             }, this);
+            
+            //Update the GUI
+            this.cableUsedText.text = "Cable left: " + String(200 - this.player.cableUsed) + "m";
         }
     }
-
+    function createText(x: number, y: number, color: Phaser.Color, size: number, text: string)
+    {
+        var style = { font: "65px Arial", fill: "#000000", align: "center" };
+        var _text = game.add.text(x, y, text, style);
+        _text.fontSize = size;
+        _text.fill = color;
+        return _text;
+    }
 }
