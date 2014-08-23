@@ -8,7 +8,7 @@ module states {
         ROTATION_SPEED	: number = 5;
         SIZE		: Phaser.Point = new Phaser.Point(32, 20);
 	ps              : PlayState;
-	
+		
         constructor(ps: PlayState, x: number, y: number) {
             super(ps.game, x, y, "car");
             this.anchor.setTo(0.5, 0.5);
@@ -79,7 +79,11 @@ module states {
 		var constraint = this.game.physics.p2.createDistanceConstraint(l, last, s, 10);
 		this.cable.add(l);
 		last = l;
+		if(i == (N-1)) {
+		    body.static = true;
+		}
 	    }
+
 	}
     }
 }
