@@ -13,7 +13,8 @@ module states {
         
         preload() {
             this.game.load.image("house1", "assets/house1.png");            
-            this.game.load.image("car", "assets/car.png");            
+            this.game.load.image("car", "assets/car.png");
+            this.game.load.image("carWheel", "assets/wheel.png");
         }
         
         create() {
