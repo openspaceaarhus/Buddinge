@@ -12,7 +12,7 @@ module states {
             this.game.physics.p2.enableBody(this, false);
             
             var body: Phaser.Physics.P2.Body = this.body;
-            body.setRectangle(48, 32);
+            body.setRectangle(32, 20);
             game.add.existing(this);
         }
         
