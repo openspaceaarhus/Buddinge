@@ -2,7 +2,7 @@
 module states {
     export class Player extends Phaser.Sprite {
         constructor(game: Phaser.Game, x: number, y: number) {
-            super(game, x, y, "car1", 0);
+            super(game, x, y, "car", 0);
             this.anchor.setTo(0.5, 0.5);
             this.animations.add("walk", [0, 1, 2, 3, 4], 10, true);
             game.physics.arcade.enableBody(this);
@@ -25,8 +25,8 @@ module states {
             }
             if(this.game.input.keyboard.isDown(Phaser.Keyboard.UP))
             {
-                this.body.velocity.x = Math.cos(this.rotation) * 50;
-                this.body.velocity.y = Math.sin(this.rotation) * 50;
+                this.body.velocity.x = Math.cos(this.rotation) * 150;
+                this.body.velocity.y = Math.sin(this.rotation) * 150;
             }
         }
     }
