@@ -14,7 +14,7 @@ module states {
             body.setRectangle(48, 32);
 	    body.mass = 1;
             game.add.existing(this);
-	    this.add_cable();
+	    //this.add_cable();
         }
 
         update() 
@@ -52,21 +52,22 @@ module states {
 	    for(var i = 0 ; i < 10 ; i++) {
                 var dx =  this.body.x + Math.cos(this.rotation + 180) * .10;
                 var dy =  this.body.y + Math.sin(this.rotation + 180) * .10;
-		if (i == 9) 
-		    var  l = new  Phaser.Sprite(this.game, dx, dy, 'plug');
-		else
-		    var  l = new  Phaser.Sprite(this.game, dx, dy, 'particle');
-		this.game.physics.p2.enableBody(l, false);
-		if (last == this) {
-		    var constraint = this.game.physics.p2.createDistanceConstraint(l, last, .1);  //createRevoluteConstraint(l , [-30.0, 0.0], last, [0.0, 1.0], 10.0);
-		} else {
-		    var constraint = this.game.physics.p2.createDistanceConstraint(l, last, 1);  //createRevoluteConstraint(l , [0.0, -10.0], last, [0.0, 1.0], 10.0);
-		}
-		l.body.mass = .001;
+            
+		  if (i == 9) 
+              var  l = new  Phaser.Sprite(this.game, dx, dy, 'plug');
+		  else
+              var  l = new  Phaser.Sprite(this.game, dx, dy, 'particle');
+		  this.game.physics.p2.enableBody(l, false);
+		  if (last == this) {
+              var constraint = this.game.physics.p2.createDistanceConstraint(l, last, .1);  //createRevoluteConstraint(l , [-30.0, 0.0], last, [0.0, 1.0], 10.0);
+		  } else {
+              var constraint = this.game.physics.p2.createDistanceConstraint(l, last, 1);  //createRevoluteConstraint(l , [0.0, -10.0], last, [0.0, 1.0], 10.0);
+          }
+		  l.body.mass = .001;
 
-		this.cable.add(l);
+		  this.cable.add(l);
 		
-		last = l;
+		  last = l;
 	    }
 
 	}
