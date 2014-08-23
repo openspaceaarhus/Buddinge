@@ -14,7 +14,7 @@ module states {
         }
         
         create() {
-            this.game.stage.backgroundColor = 0x000000;
+            this.game.stage.backgroundColor = 0xAAAAAA;
 
             this.game.physics.startSystem(Phaser.Physics.P2JS);
             this.game.physics.p2.setImpactEvents(true);

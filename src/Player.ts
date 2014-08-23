@@ -8,11 +8,11 @@ module states {
         constructor(game: Phaser.Game, x: number, y: number) {
             super(game, x, y, "car", 0);
             this.anchor.setTo(0.5, 0.5);
-            this.animations.add("walk", [0, 1, 2, 3, 4], 10, true);
 
             this.game.physics.p2.enableBody(this, false);
             var body: Phaser.Physics.P2.Body = this.body;
             body.setRectangle(48, 32);
+	    body.mass = 1;
             game.add.existing(this);
 	    this.add_cable();
         }
@@ -50,13 +50,19 @@ module states {
 
 	    var last : Phaser.Sprite  = this;
 	    for(var i = 0 ; i < 10 ; i++) {
-                var dx =  this.body.velocity.x + Math.cos(this.rotation) * 15;
-                var dy =  this.body.velocity.y + Math.sin(this.rotation) * 15;
-
-		var  l = new  Phaser.Sprite(this.game, dx, dy, 'particle');
+                var dx =  this.body.x + Math.cos(this.rotation + 180) * .10;
+                var dy =  this.body.y + Math.sin(this.rotation + 180) * .10;
+		if (i == 9) 
+		    var  l = new  Phaser.Sprite(this.game, dx, dy, 'plug');
+		else
+		    var  l = new  Phaser.Sprite(this.game, dx, dy, 'particle');
 		this.game.physics.p2.enableBody(l, false);
-		var constraint = this.game.physics.p2.createRevoluteConstraint(l , [0.0, -10.0], last, [0.0, 10.0], 20);
-		l.body.mass = .1;
+		if (last == this) {
+		    var constraint = this.game.physics.p2.createDistanceConstraint(l, last, .1);  //createRevoluteConstraint(l , [-30.0, 0.0], last, [0.0, 1.0], 10.0);
+		} else {
+		    var constraint = this.game.physics.p2.createDistanceConstraint(l, last, 1);  //createRevoluteConstraint(l , [0.0, -10.0], last, [0.0, 1.0], 10.0);
+		}
+		l.body.mass = .001;
 
 		this.cable.add(l);
 		
