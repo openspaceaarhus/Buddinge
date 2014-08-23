@@ -10,10 +10,10 @@ module states {
             this.animations.add("walk", [0, 1, 2, 3, 4], 10, true);
 
             this.game.physics.p2.enableBody(this, false);
-            
             var body: Phaser.Physics.P2.Body = this.body;
             body.setRectangle(48, 32);            
             game.add.existing(this);
+	    this.add_cable();
         }
 
         update() 
@@ -40,14 +40,20 @@ module states {
 	add_cable() {
 	    this.cable = this.game.add.group();
 
-	    var last = this;
-	    for(var i  0 ; i < 10 ; i_+++) {
-		var  l = new  Phaser.Sprite(this.game, this.body.x, this.body.x);
-		this.cable.add(l);
+	    var last : Phaser.Sprite  = this;
+	    for(var i = 0 ; i < 10 ; i++) {
+                var dx =  this.body.velocity.x + Math.cos(this.rotation) * 15;
+                var dy =  this.body.velocity.y + Math.sin(this.rotation) * 15;
 
+		var  l = new  Phaser.Sprite(this.game, dx, dy, 'particle');
+		this.game.physics.p2.enableBody(l, false);
+		var constraint = this.game.physics.p2.createRevoluteConstraint(l , [0.0, -10.0], last, [0.0, 10.0], 20);
+		l.body.mass = .1;
+
+		this.cable.add(l);
+		
+		last = l;
 	    }
-	    
-	    
 
 	}
     }
