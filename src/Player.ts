@@ -20,6 +20,7 @@ module states {
             body.mass = 1;
             game.add.existing(this);
             this.add_cable(50);
+            this.cableUsed = 100;
         }
 
         update() 
