@@ -197,6 +197,9 @@ module states {
             this.cableUsedText.setShadow(-5, -5, 'rgba(0,0,0,0.5)', 5);
             this.cableUsedText.stroke = '#000000';
             this.cableUsedText.strokeThickness = 3;
+
+
+	    this.create_mission();
         }
         
         /*
@@ -235,8 +238,8 @@ module states {
                 this.motorSound.stop();
             }
 
-	    if (this.game.input.keyboard.isDown(Phaser.Keyboard.M))
-		this.create_mission();
+	    // if (this.game.input.keyboard.isDown(Phaser.Keyboard.M))
+	    // 	this.create_mission();
 	    
             //Update the GUI
             this.cableUsedText.text = String(200 - this.player.cableUsed * this.player.SEGMENT_LENGTH) + "m";
