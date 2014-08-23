@@ -8,7 +8,8 @@ module states {
         ROTATION_SPEED	: number = 5;
         SIZE		: Phaser.Point = new Phaser.Point(32, 20);
 	ps              : PlayState;
-		
+        cableUsed	: number;
+
         constructor(ps: PlayState, x: number, y: number) {
             super(ps.game, x, y, "car");
             this.anchor.setTo(0.5, 0.5);
@@ -19,6 +20,7 @@ module states {
             body.mass = 1;
             game.add.existing(this);
             this.add_cable(50);
+            this.cableUsed = 100;
         }
 
         update() 

@@ -74,8 +74,11 @@ module states {
                         continue;
                     }
                     
-                    if (Math.random() < 0.25) {
-                        var sprite = houseGroup.create(x, y, "park");
+                    if (Math.random() < 0.35) {
+                        var park:Phaser.Sprite = game.add.sprite(x, y, "park");
+                        park.anchor.setTo(0.5, 0.5);
+                        
+                        
                     } else {
                         var sprite = houseGroup.create(x, y, "house1");
                         var spriteBody:Phaser.Physics.P2.Body = sprite.body;
@@ -84,13 +87,18 @@ module states {
                         spriteBody.setCollisionGroup(houseCollisionGroup);                    
                         spriteBody.collides([houseCollisionGroup, playerCollisionGroup]);
                         spriteBody.mass = 5;
-                    	spriteBody.setMaterial(this.HOUSE_MATERIAL);
-			
+
+                        spriteBody.setMaterial(this.HOUSE_MATERIAL);
+                        spriteBody.fixedRotation = true;
+                        
                         var spriteLock = this.game.add.sprite(x, y);
                         this.game.physics.p2.enableBody(spriteLock, false);
+                        
+                        var spriteLockBody: Phaser.Physics.P2.Body = spriteLock.body;                        
                         spriteLock.body.dynamic = false;
                     
                         this.game.physics.p2.createSpring(sprite, spriteLock, 0.01, 1000, 0.9);
+//                        this.game.physics.p2.createLockConstraint(spriteBody, spriteLockBody);
                     }
                 }
             }
@@ -155,12 +163,7 @@ b
             } else {
                 this.motorSound.stop();
             }
-            
-            this.houseGroup.forEach(function (sprite: Phaser.Sprite) {
-                sprite.body.angularVelocity = 0;
-                sprite.body.angle = 0;
-            }, this);
-            
+
             //Update the GUI
             this.cableUsedText.text = "Cable left: " + String(200 - this.player.cableUsed) + "m";
         }
