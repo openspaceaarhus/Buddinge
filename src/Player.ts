@@ -1,22 +1,24 @@
 /// <reference path="../lib/phaser.d.ts" />
+/// <reference path="PlayState.ts"/>
 module states {
     export class Player extends Phaser.Sprite {
-        cable : Phaser.Group;
-        cableUsed: number = 0;
-        MAX_SPEED: number = 10;
-        ROTATION_SPEED: number = 5;
-        
-        SIZE: Phaser.Point = new Phaser.Point(32, 20);
-        constructor(game: Phaser.Game, x: number, y: number) {
-            super(game, x, y, "car");
+        cable		: Phaser.Group;
+	last		: Phaser.Sprite;
+        MAX_SPEED	: number = 10;
+        ROTATION_SPEED	: number = 5;
+        SIZE		: Phaser.Point = new Phaser.Point(32, 20);
+	ps              : PlayState;
+	
+        constructor(ps: PlayState, x: number, y: number) {
+            super(ps.game, x, y, "car");
             this.anchor.setTo(0.5, 0.5);
-
+	    this.ps = ps;
             this.game.physics.p2.enableBody(this, false);
             var body: Phaser.Physics.P2.Body = this.body;
             body.setRectangle(this.SIZE.x, this.SIZE.y);
             body.mass = 1;
             game.add.existing(this);
-            //this.add_cable();
+            this.add_cable(50);
         }
 
         update() 
@@ -53,28 +55,31 @@ module states {
             {
                 this.body.damping = 0.7;
             }
+
         }
 
-	add_cable()  {
-            this.cable = this.game.add.group();
 
-	    var last : Phaser.Sprite  = this;
-	    for(var i = 0 ; i < 100 ; i++) {
-                var dx =  this.body.x + Math.cos(this.rotation + 180) * .10;
-                var dy =  this.body.y + Math.sin(this.rotation + 180) * .10;
-		var l : Phaser.Sprite;
-		if (i == 9)  {
-		    l = new  Phaser.Sprite(this.game, dx, dy, 'plug');
-		} else {
-		    l = new  Phaser.Sprite(this.game, dx, dy, 'particle');
-		}
-		this.game.physics.p2.enableBody(l, false);
-		l.body.mass = .01;
-		var constraint = this.game.physics.p2.createDistanceConstraint(l, last, .1);
+	add_cable(N : number)  {
+            this.cable = this.game.add.group();
+	    this.cable.enableBody = true;
+	    this.cable.physicsBodyType = Phaser.Physics.P2JS;
+
+
+	    var last : Phaser.Sprite = this;
+	    var s  = 6;
+	    for(var i : number = 0; i < N; i++) {
+		var x = this.body.x + Math.cos(this.rotation + 3.14) * s;
+		var y = this.body.y + Math.sin(this.rotation + 3.14) * s;
+		var l = this.cable.create( x, y, 'cable');
+		var body:Phaser.Physics.P2.Body = l.body;
+		body.setRectangle(s,s);
+		body.mass = .001;
+		body.damping = .1;
+		body.setMaterial(this.ps.CABLE_MATERIAL);
+		var constraint = this.game.physics.p2.createDistanceConstraint(l, last, s, 10);
 		this.cable.add(l);
 		last = l;
 	    }
-
 	}
     }
 }

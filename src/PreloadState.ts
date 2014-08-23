@@ -9,7 +9,7 @@ module states {
             this.load.setPreloadSprite(this.preloadBar);
             
             this.load.image("titlepage", "assets/titlepage.jpg");
-            this.load.image("particle", "assets/particle.png");
+            this.load.image("cable", "assets/particle.png");
             this.load.image("plug", "assets/plug.png");
             this.load.image("car1", "OSAA_LOGO.png");
             this.load.image("level1", "assets/level1.png");

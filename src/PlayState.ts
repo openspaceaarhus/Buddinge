@@ -1,11 +1,15 @@
 /// <reference path="../lib/phaser.d.ts" />
 /// <reference path="Player.ts"/>
 module states {
+
     
     export class PlayState extends Phaser.State {    
         
         HOUSE_SIZE: number = 64;
         HOUSE_SPACE: number = 76;
+
+	HOUSE_MATERIAL : Phaser.Physics.P2.Material;
+	CABLE_MATERIAL : Phaser.Physics.P2.Material;
 
         emitter: Phaser.Particles.Arcade.Emitter;
         player: Player;   
@@ -37,6 +41,10 @@ module states {
 
             this.game.physics.startSystem(Phaser.Physics.P2JS);
             this.game.physics.p2.setImpactEvents(true);
+	    this.HOUSE_MATERIAL = this.game.physics.p2.createMaterial();
+	    this.CABLE_MATERIAL = this.game.physics.p2.createMaterial();
+	    var slippery = this.game.physics.p2.createContactMaterial(this.HOUSE_MATERIAL, this.CABLE_MATERIAL, {friction : 0});
+	    this.game.physics.p2.addContactMaterial(slippery);
             
             var playerCollisionGroup = this.game.physics.p2.createCollisionGroup();
             var houseCollisionGroup = this.game.physics.p2.createCollisionGroup();
@@ -66,7 +74,6 @@ module states {
                         continue;
                     }
                     
-                    
                     if (Math.random() < 0.25) {
                         var sprite = houseGroup.create(x, y, "park");
                     } else {
@@ -77,7 +84,8 @@ module states {
                         spriteBody.setCollisionGroup(houseCollisionGroup);                    
                         spriteBody.collides([houseCollisionGroup, playerCollisionGroup]);
                         spriteBody.mass = 5;
-                    
+                    	spriteBody.setMaterial(this.HOUSE_MATERIAL);
+			
                         var spriteLock = this.game.add.sprite(x, y);
                         this.game.physics.p2.enableBody(spriteLock, false);
                         spriteLock.body.dynamic = false;
@@ -86,6 +94,10 @@ module states {
                     }
                 }
             }
+
+            
+
+
                         
             this.emitter = this.game.add.emitter(0, 0, 100);            
             this.emitter.makeParticles("smoke");
@@ -95,7 +107,7 @@ module states {
             this.emitter.setXSpeed(-25, 25);
             this.emitter.setYSpeed(-25, 25);
 
-            this.player = new Player(this.game, 300, 300);
+	    this.player = new Player(this, 300, 300);
             
             var body:Phaser.Physics.P2.Body = this.player.body;
             body.setCollisionGroup(playerCollisionGroup);

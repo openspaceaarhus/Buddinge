@@ -5,7 +5,7 @@
 /// <reference path="PlayState.ts" />
 
 class Game extends Phaser.Game {
-    
+
     constructor() {
         super(800, 600, Phaser.AUTO, "phaser-example", null);
         this.state.add("boot", new states.BootState());
