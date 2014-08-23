@@ -10,11 +10,20 @@ module states {
         player: Player;   
         houseGroup: Phaser.Group;
         
+        collideSound: Phaser.Sound;
+        motorSound: Phaser.Sound;
+        
+        nextMotorPlay: number;
         
         preload() {
             this.game.load.image("house1", "assets/house1.png");            
             this.game.load.image("car", "assets/car.png");
             this.game.load.image("park", "assets/park.png");
+            
+            //this.game.load.audio("ding", "assets/sound/sound_haleding.wav");
+            this.game.load.audio("collide", "assets/sound/sound_kollision.wav");
+            this.game.load.audio("motorsound", "assets/sound/sound_motor.wav", true);
+            //this.game.load.audio("motorstrained", "assets/sound/sound_motorbelastet.wav");
         }
         
         create() {
@@ -36,6 +45,10 @@ module states {
             houseGroup.physicsBodyType = Phaser.Physics.P2JS;
             this.game.physics.p2.friction = 100;
             
+            this.collideSound = this.game.add.sound("collide");
+            this.motorSound = this.game.add.sound("motorsound");
+            
+            this.nextMotorPlay = game.time.time;
                     
             for (var y = 50; y < game.height; y += this.HOUSE_SPACE) {
                 for (var x = 50; x < game.width; x += this.HOUSE_SPACE) {
@@ -58,6 +71,12 @@ module states {
                     }
                 }
             }
+            
+            var offset = 50 + this.HOUSE_SIZE;
+            
+            var sprite = houseGroup.create(offset, offset, "park");
+            
+            
             
             this.player = new Player(this.game, 300, 300);
             
@@ -83,12 +102,22 @@ module states {
         */
              
         carHitHouse(body1, body2) {
+            this.collideSound.play();
             //console.log("Hit");
             //body2.sprite.alpha = 0.25;
             //game.add.tween(body2.sprite).to( { alpha: 1 }, 500, Phaser.Easing.Linear.None, true);
         }
         
         update() {
+            if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+                if (this.game.time.time > this.nextMotorPlay) {
+                    this.nextMotorPlay = this.game.time.time + 700;
+                    this.motorSound.play();
+                }
+            } else {
+                this.motorSound.stop();
+            }
+            
             this.houseGroup.forEach(function (sprite: Phaser.Sprite) {
                 sprite.body.angularVelocity = 0;
                 sprite.body.angle = 0;
