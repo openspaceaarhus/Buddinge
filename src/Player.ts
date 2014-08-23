@@ -3,7 +3,7 @@
 module states {
     export class Player extends Phaser.Sprite {
         cable		: Phaser.Group;
-        MAX_SPEED	: number = 10;
+        MAX_SPEED	: number = 20;
         ROTATION_SPEED	: number = 5;
         SIZE		: Phaser.Point = new Phaser.Point(32, 20);
 	ps              : PlayState;
@@ -21,7 +21,7 @@ module states {
             this.game.physics.p2.enableBody(this, false);
             var body: Phaser.Physics.P2.Body = this.body;
             body.setRectangle(this.SIZE.x, this.SIZE.y);
-            body.mass = 1;
+            body.mass = .1;
             game.add.existing(this);
 	    this.cable = null;
         }

@@ -49,6 +49,9 @@ module states {
 	    this.CABLE_MATERIAL = this.game.physics.p2.createMaterial();
 	    var slippery = this.game.physics.p2.createContactMaterial(this.HOUSE_MATERIAL, this.CABLE_MATERIAL, {friction : 0});
 	    this.game.physics.p2.addContactMaterial(slippery);
+
+	    this.game.world.setBounds(-10, -10, this.game.width + 20, this.game.height + 20);
+
             
             var playerCollisionGroup = this.game.physics.p2.createCollisionGroup();
             this.cableCollisionGroup = this.game.physics.p2.createCollisionGroup();
@@ -152,6 +155,11 @@ module states {
             //console.log("Hit");
             //body2.sprite.alpha = 0.25;
             //game.add.tween(body2.sprite).to( { alpha: 1 }, 500, Phaser.Easing.Linear.None, true);
+	    // Shake the camera by moving it up and down 5 times really fast
+            this.game.camera.y = 0;
+            this.game.add.tween(this.game.camera)
+		.to({ y: -5 }, 40, Phaser.Easing.Sinusoidal.InOut, false, 0, 5, true)
+		.start();
         }
         
         update() {
