@@ -20,6 +20,7 @@ module states {
         
         collideSound: Phaser.Sound;
         motorSound: Phaser.Sound;
+	dingSound: Phaser.Sound;
         
         nextMotorPlay: number;
         nextPuff: number;
@@ -30,6 +31,8 @@ module states {
 
 	houseA : Phaser.Sprite = null;
 	houseB : Phaser.Sprite = null;
+	start_house : Phaser.Sprite = null;
+	end_house : Phaser.Sprite = null;
 
 	hilight_house(house : Phaser.Sprite) {
 	    this.game.add.sprite(house.x, house.y + 24, "hep").anchor.setTo(.5,.5);
@@ -41,10 +44,20 @@ module states {
 	    return  Math.abs(dx) < 24 && dy > 24 && dy < 48
 	}
 	
-	can_start_cable(p : Player) : boolean {
-	    if (this.houseB || this.houseA) 
-		return this.house_hitbox(p, this.houseA) || this.house_hitbox(p, this.houseB);
-	    return false;
+	can_start_cable(p : Player) : Phaser.Sprite {
+	    if (this.houseB || this.houseA) {
+		if (this.house_hitbox(p, this.houseA)) {
+		    return this.houseA;
+		} else if (this.house_hitbox(p, this.houseB)) {
+		    return this.houseB;
+		}
+	    }
+	    return null;
+	}
+
+	set_start_house(house:Phaser.Sprite) {
+	    this.start_house = house;
+	    this.end_house = this.houseA == house ? this.houseB : this.houseA;
 	}
 
 	create_mission() {
@@ -72,7 +85,7 @@ module states {
             this.game.load.image("asphalt", "assets/asphalt.png");
 	    this.game.load.image("hep", "assets/hep.png");
             
-            //this.game.load.audio("ding", "assets/sound/sound_haleding.wav");
+            this.game.load.audio("ding", "assets/sound/sound_haleding.wav");
             this.game.load.audio("collide", "assets/sound/sound_kollision.wav");
             this.game.load.audio("motorsound", "assets/sound/sound_motor.wav", true);
             //this.game.load.audio("motorstrained", "assets/sound/sound_motorbelastet.wav");
@@ -107,11 +120,12 @@ module states {
             this.game.physics.p2.friction = 100;
             
             this.collideSound = this.game.add.sound("collide");
+	    this.dingSound = this.game.add.sound("ding");
             this.motorSound = this.game.add.sound("motorsound");            
             this.nextMotorPlay = game.time.time;
             this.nextPuff = game.time.time;
 
-            for (var y = 50; y <= game.height; y += this.HOUSE_SPACE) {
+            for (var y = 50; y <= game.height; y += this.HOUSE_SPACE*2) {
                 for (var x = 30; x <= game.width; x += this.HOUSE_SPACE) {
                     var row = (y - 50) / this.HOUSE_SPACE;
                     var col = (x - 30) / this.HOUSE_SPACE;
@@ -226,6 +240,14 @@ module states {
 	    
             //Update the GUI
             this.cableUsedText.text = String(200 - this.player.cableUsed * this.player.SEGMENT_LENGTH) + "m";
+
+	    // check the cable end
+	    if (this.start_house) {
+		if (this.house_hitbox(this.player, this.end_house)) {
+		    console.log("YEEEHAW");
+		    this.dingSound.play();
+		}
+	    }
         }
     }
 

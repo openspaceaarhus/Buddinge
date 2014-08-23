@@ -26,50 +26,39 @@ module states {
             this.cable = null;
         }
 
-        update() 
-        {
-            if(this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT))
-            {
-                if(this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) 
-                {
-                    this.body.angularVelocity = -this.ROTATION_SPEED;
-                }
-                if(this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) 
-                {
-                    this.body.angularVelocity = this.ROTATION_SPEED;
-                }
-            }
-            else
-            {
+        update()  {
+            if(this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT))  {
+                this.body.angularVelocity = -this.ROTATION_SPEED;
+            } else if(this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+                this.body.angularVelocity = this.ROTATION_SPEED;
+            }  else  {
                 this.body.angularVelocity = 0;
-            }
-            if(this.game.input.keyboard.isDown(Phaser.Keyboard.UP) || this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN))
-            {
-                if(this.game.input.keyboard.isDown(Phaser.Keyboard.UP))
-                {
-                    this.body.damping = 0.0;
-                    this.body.applyForce([Math.cos(this.rotation) * -this.MAX_SPEED, Math.sin(this.rotation) * -this.MAX_SPEED], this.x + Math.cos(this.rotation) * this.SIZE.x / 2.0, this.y + Math.sin(this.rotation) * this.SIZE.y / 2.0);
-                }
-                if(this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN))
-                {
-                    this.body.damping = 0.0;
-                    this.body.applyForce([Math.cos(this.rotation) * this.MAX_SPEED / 2.0, Math.sin(this.rotation) * this.MAX_SPEED / 2.0], this.x + Math.cos(this.rotation) * -this.SIZE.x / 2.0, this.y + Math.sin(this.rotation) * -this.SIZE.y / 2.0);
-                }
-            }
-            else
-            {
+	    }
+
+            if(this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+                this.body.damping = 0.0;
+                this.body.applyForce([Math.cos(this.rotation) * -this.MAX_SPEED, Math.sin(this.rotation) * -this.MAX_SPEED], this.x + Math.cos(this.rotation) * this.SIZE.x / 2.0, this.y + Math.sin(this.rotation) * this.SIZE.y / 2.0);
+            } else  if(this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
+                this.body.damping = 0.0;
+                this.body.applyForce([Math.cos(this.rotation) * this.MAX_SPEED / 2.0, Math.sin(this.rotation) * this.MAX_SPEED / 2.0], this.x + Math.cos(this.rotation) * -this.SIZE.x / 2.0, this.y + Math.sin(this.rotation) * -this.SIZE.y / 2.0);
+            } else {
                 this.body.damping = 0.7;
-            }
+	    }
 
 	    if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
 		if (!this.cable ) {
 		    // check if this is a valid place to start a connection?
-		    if (this.ps.can_start_cable(this))
+		    var start = this.ps.can_start_cable(this);
+		    if (start) {
 			this.add_cable(1);
+			this.ps.set_start_house(start);
+		    }
 		} else {
 		    this.add_segment();
 		}
 	    }
+
+	    // Manually do a check for 
         }
 
 	
@@ -107,7 +96,7 @@ module states {
 
 	    // update last constrain and last segment
 	    this.last_segment = l;
-        this.bringToTop();
+            this.bringToTop();
 	}
 
 	remove_segment() {
@@ -115,7 +104,7 @@ module states {
 	}
 	
 	add_cable(N : number)  {        
-        this.cable = this.game.add.group();
+            this.cable = this.game.add.group();
 	    this.cable.enableBody = true;
 	    this.cable.physicsBodyType = Phaser.Physics.P2JS;
 
