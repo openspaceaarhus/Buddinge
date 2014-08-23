@@ -14,7 +14,7 @@ module states {
             body.setRectangle(this.SIZE.x, this.SIZE.y);
             body.mass = 1;
             game.add.existing(this);
-            this.add_cable();
+            //this.add_cable();
         }
 
         update() 
@@ -62,6 +62,7 @@ module states {
             {
                 var dx =  this.body.x + Math.cos(this.rotation + 180) * .10;
                 var dy =  this.body.y + Math.sin(this.rotation + 180) * .10;
+                
                 if (i == 9) 
                     var  l = new  Phaser.Sprite(this.game, dx, dy, 'plug');
                 else

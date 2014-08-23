@@ -82,9 +82,9 @@ module states {
         */
              
         carHitHouse(body1, body2) {
-            console.log("Hit");
-            body2.sprite.alpha = 0.25;
-            game.add.tween(body2.sprite).to( { alpha: 1 }, 500, Phaser.Easing.Linear.None, true);
+            //console.log("Hit");
+            //body2.sprite.alpha = 0.25;
+            //game.add.tween(body2.sprite).to( { alpha: 1 }, 500, Phaser.Easing.Linear.None, true);
         }
         
         update() {
