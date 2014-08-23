@@ -3,41 +3,65 @@
 module states {
     
     export class PlayState extends Phaser.State {
+        HOUSE_SIZE: number = 64;
+        HOUSE_SPACE: number = 150;
+
         emitter: Phaser.Particles.Arcade.Emitter;
         player: Player;   
-        
+        houseGroup: Phaser.Group;
         
         
         preload() {
             this.game.load.image("house1", "assets/house1.png");            
-            this.game.load.image("car", "assets/car.png");            
+            this.game.load.image("car", "assets/car.png");
+            this.game.load.image("carWheel", "assets/wheel.png");
         }
         
         create() {
-            this.game.stage.backgroundColor = 0x000000;
+
+            this.game.stage.backgroundColor = 0xAAAAAA;
+            
+            var cars = [];
 
             this.game.physics.startSystem(Phaser.Physics.P2JS);
             this.game.physics.p2.setImpactEvents(true);
             
-//            var this.playerCollisionGroup = this.game.physics.p2.createCollisionGroup();
+            var playerCollisionGroup = this.game.physics.p2.createCollisionGroup();
             var houseCollisionGroup = this.game.physics.p2.createCollisionGroup();
             this.game.physics.p2.updateBoundsCollisionGroup();
-            
-                    
+                                
             //this.game.add.sprite(100, 100, "car");
             
-            for (var y = 50; y < game.height; y += 150) {
-                for (var x = 50; x < game.width; x += 150) {
-                    var sprite = this.game.add.sprite(x, y, "house1");
-                    this.game.physics.p2.enableBody(sprite, false);
-                    sprite.body.setRectangle(64, 64);
+            this.houseGroup = this.game.add.group();
+            var houseGroup = this.houseGroup;
+            houseGroup.enableBody = true;
+            houseGroup.physicsBodyType = Phaser.Physics.P2JS;
+            this.game.physics.p2.friction = 100;
+            
+                    
+            for (var y = 50; y < game.height; y += this.HOUSE_SPACE) {
+                for (var x = 50; x < game.width; x += this.HOUSE_SPACE) {
+                    var sprite = houseGroup.create(x, y, "house1");
+                    var spriteBody:Phaser.Physics.P2.Body = sprite.body;
+                    
+                    spriteBody.setRectangle(this.HOUSE_SIZE, this.HOUSE_SIZE);
+                    spriteBody.setCollisionGroup(houseCollisionGroup);                    
+                    spriteBody.collides([houseCollisionGroup, playerCollisionGroup]);
+                    spriteBody.mass = 5;
+                    
+                    var spriteLock = this.game.add.sprite(x, y);
+                    this.game.physics.p2.enableBody(spriteLock, false);
+                    spriteLock.body.dynamic = false;
+                    
+                    this.game.physics.p2.createSpring(sprite, spriteLock, 0.1, 50, 0.5);
                 }
             }
             
-            this.player = new Player(this.game, 100, 100);
+            this.player = new Player(this.game, 300, 300);
             
             var body:Phaser.Physics.P2.Body = this.player.body;
-            body.createGroupCallback(houseCollisionGroup, this.carHitHouse, this);
+            body.setCollisionGroup(playerCollisionGroup);
+            body.collides(houseCollisionGroup, this.carHitHouse, this);
 
             /*
             this.emitter = this.game.add.emitter(0, 0, 100);            
@@ -55,10 +79,18 @@ module states {
             this.emitter.start(true, 2000, null, 10);
         }
         */
-     
-        
+             
         carHitHouse(body1, body2) {
-            body2.sprite.alpha = 0.5;
+            //console.log("Hit");
+            //body2.sprite.alpha = 0.25;
+            //game.add.tween(body2.sprite).to( { alpha: 1 }, 500, Phaser.Easing.Linear.None, true);
+        }
+        
+        update() {
+            this.houseGroup.forEach(function (sprite: Phaser.Sprite) {
+                sprite.body.angularVelocity = 0;
+                sprite.body.angle = 0;
+            }, this);
         }
     }
 
