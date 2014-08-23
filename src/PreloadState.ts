@@ -20,7 +20,7 @@ module states {
         }
         
         startTitleMenu() {
-            this.game.state.start("title", true, false);   
+            this.game.state.start("play", true, false);   
         }
         
     }
