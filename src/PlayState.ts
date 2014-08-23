@@ -13,7 +13,10 @@ module states {
 
         emitter: Phaser.Particles.Arcade.Emitter;
         player: Player;   
+        
         houseGroup: Phaser.Group;
+        houseCollisionGroup: Phaser.Physics.P2.CollisionGroup;
+        cableCollisionGroup: Phaser.Physics.P2.CollisionGroup;
         
         collideSound: Phaser.Sound;
         motorSound: Phaser.Sound;
@@ -48,7 +51,8 @@ module states {
 	    this.game.physics.p2.addContactMaterial(slippery);
             
             var playerCollisionGroup = this.game.physics.p2.createCollisionGroup();
-            var houseCollisionGroup = this.game.physics.p2.createCollisionGroup();
+            this.cableCollisionGroup = this.game.physics.p2.createCollisionGroup();
+            this.houseCollisionGroup = this.game.physics.p2.createCollisionGroup();
             this.game.physics.p2.updateBoundsCollisionGroup();
                                 
             //this.game.add.sprite(100, 100, "car");
@@ -85,8 +89,8 @@ module states {
                         var spriteBody:Phaser.Physics.P2.Body = sprite.body;
                     
                         spriteBody.setRectangle(this.HOUSE_SIZE, this.HOUSE_SIZE);
-                        spriteBody.setCollisionGroup(houseCollisionGroup);                    
-                        spriteBody.collides([houseCollisionGroup, playerCollisionGroup]);
+                        spriteBody.setCollisionGroup(this.houseCollisionGroup);                    
+                        spriteBody.collides([this.houseCollisionGroup, playerCollisionGroup, this.cableCollisionGroup]);
                         spriteBody.mass = 5;
 
                         spriteBody.setMaterial(this.HOUSE_MATERIAL);
@@ -112,11 +116,11 @@ module states {
             this.emitter.setXSpeed(-25, 25);
             this.emitter.setYSpeed(-25, 25);
 
-	    this.player = new Player(this, 300, 300);
+	       this.player = new Player(this, 300, 300);
             
             var body:Phaser.Physics.P2.Body = this.player.body;
             body.setCollisionGroup(playerCollisionGroup);
-            body.collides(houseCollisionGroup, this.carHitHouse, this);
+            body.collides(this.houseCollisionGroup, this.carHitHouse, this);
 
             /*
             this.emitter = this.game.add.emitter(0, 0, 100);            

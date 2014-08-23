@@ -89,6 +89,8 @@ module states {
 	    body.mass = .01;
 	    body.damping = .7;
 	    body.setMaterial(this.ps.CABLE_MATERIAL);
+        body.setCollisionGroup(this.ps.cableCollisionGroup);
+        body.collides(this.ps.houseCollisionGroup);
 	
 	    // add constrain between new segment and car + last segment and new segment
 	    if(this != this.last_segment) 
