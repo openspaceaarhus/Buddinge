@@ -62,13 +62,17 @@ module states {
             }
 
 	    if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
-		if (!this.cable)
-		    this.add_cable(1);
-		else
+		if (!this.cable ) {
+		    // check if this is a valid place to start a connection?
+		    if (this.ps.can_start_cable(this))
+			this.add_cable(1);
+		} else {
 		    this.add_segment();
+		}
 	    }
         }
 
+	
 	add_segment() {
             if(this.cableUsed >= this.maxCable)  {
 		return;

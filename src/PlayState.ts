@@ -5,7 +5,7 @@ module states {
     
     export class PlayState extends Phaser.State {    
         
-        HOUSE_SIZE: number = 48;
+        HOUSE_SIZE: number =  48;
         HOUSE_SPACE: number = 56;
 
 	HOUSE_MATERIAL : Phaser.Physics.P2.Material;
@@ -25,6 +25,38 @@ module states {
         nextPuff: number;
         
         cableUsedText: Phaser.Text;
+
+
+
+	houseA : Phaser.Sprite = null;
+	houseB : Phaser.Sprite = null;
+
+	hilight_house(house : Phaser.Sprite) {
+	    this.game.add.sprite(house.x, house.y + 24, "hep").anchor.setTo(.5,.5);
+	}
+
+	house_hitbox(p : Phaser.Sprite, house : Phaser.Sprite) : boolean {
+	    var dy = (p.y - house.y);
+	    var dx = (p.x - house.x);
+	    return  Math.abs(dx) < 24 && dy > 24 && dy < 48
+	}
+	
+	can_start_cable(p : Player) : boolean {
+	    if (this.houseB || this.houseA) 
+		return this.house_hitbox(p, this.houseA) || this.house_hitbox(p, this.houseB);
+	    return false;
+	}
+
+	create_mission() {
+	    if (this.houseB || this.houseA) return;
+	    this.houseA =  this.houseGroup.getRandom(0,0);
+	    do {
+		this.houseB = this.houseGroup.getRandom(0,0);
+	    } while( this.houseA == this.houseB);
+	    this.hilight_house(this.houseA);
+	    this.hilight_house(this.houseB);
+	}
+
         
         preload() {
             this.game.load.image("house1", "assets/house1.png");            
@@ -33,6 +65,7 @@ module states {
             this.game.load.image("smoke", "assets/smoke.png");
             this.game.load.image("cableUsedIcon", "assets/cableIcon.png");
             this.game.load.image("asphalt", "assets/asphalt.png");
+	    this.game.load.image("hep", "assets/hep.png");
             
             //this.game.load.audio("ding", "assets/sound/sound_haleding.wav");
             this.game.load.audio("collide", "assets/sound/sound_kollision.wav");
@@ -58,7 +91,7 @@ module states {
             this.cableCollisionGroup = this.game.physics.p2.createCollisionGroup();
             this.houseCollisionGroup = this.game.physics.p2.createCollisionGroup();
             this.game.physics.p2.updateBoundsCollisionGroup();
-                                
+            
             //this.game.add.sprite(100, 100, "car");
             this.game.add.tileSprite(0, 0, this.game.width, this.game.height, "asphalt");
             
@@ -72,7 +105,7 @@ module states {
             this.motorSound = this.game.add.sound("motorsound");            
             this.nextMotorPlay = game.time.time;
             this.nextPuff = game.time.time;
-                    
+            
             for (var y = 50; y < game.height; y += this.HOUSE_SPACE) {
                 for (var x = 50; x < game.width; x += this.HOUSE_SPACE) {
                     var row = (y - 50) / this.HOUSE_SPACE;
@@ -92,7 +125,7 @@ module states {
                     } else {
                         var sprite = houseGroup.create(x, y, "house1");
                         var spriteBody:Phaser.Physics.P2.Body = sprite.body;
-                    
+			
                         spriteBody.setRectangle(this.HOUSE_SIZE, this.HOUSE_SIZE);
                         spriteBody.setCollisionGroup(this.houseCollisionGroup);                    
                         spriteBody.collides([this.houseCollisionGroup, playerCollisionGroup, this.cableCollisionGroup]);
@@ -106,13 +139,13 @@ module states {
                         
                         var spriteLockBody: Phaser.Physics.P2.Body = spriteLock.body;                        
                         spriteLock.body.dynamic = false;
-                    
+			
                         this.game.physics.p2.createSpring(sprite, spriteLock, 0.01, 1000, 0.9);
-//                        this.game.physics.p2.createLockConstraint(spriteBody, spriteLockBody);
+			//                        this.game.physics.p2.createLockConstraint(spriteBody, spriteLockBody);
                     }
                 }
             }
-                        
+            
             this.emitter = this.game.add.emitter(0, 0, 100);            
             this.emitter.makeParticles("smoke");
             this.emitter.gravity = 0;
@@ -121,18 +154,18 @@ module states {
             this.emitter.setXSpeed(-25, 25);
             this.emitter.setYSpeed(-25, 25);
 
-	       this.player = new Player(this, 320, 320);
+	    this.player = new Player(this, 320, 320);
             
             var body:Phaser.Physics.P2.Body = this.player.body;
             body.setCollisionGroup(playerCollisionGroup);
             body.collides(this.houseCollisionGroup, this.carHitHouse, this);
 
             /*
-            this.emitter = this.game.add.emitter(0, 0, 100);            
-            this.emitter.makeParticles("particle");
-            this.emitter.gravity = 200;
-            this.emitter.setScale(1, 4, 1, 4, 1000, Phaser.Easing.Cubic.InOut, false);             
-            this.game.input.onDown.add(this.burst, this);
+              this.emitter = this.game.add.emitter(0, 0, 100);            
+              this.emitter.makeParticles("particle");
+              this.emitter.gravity = 200;
+              this.emitter.setScale(1, 4, 1, 4, 1000, Phaser.Easing.Cubic.InOut, false);             
+              this.game.input.onDown.add(this.burst, this);
             */
             
             //GUI Stuff
@@ -146,12 +179,12 @@ module states {
         }
         
         /*
-        burst(pointer) {
-            this.emitter.x = pointer.x;
-            this.emitter.y = pointer.y;
-            this.emitter.start(true, 2000, null, 10);
-        }*/
-                     
+          burst(pointer) {
+          this.emitter.x = pointer.x;
+          this.emitter.y = pointer.y;
+          this.emitter.start(true, 2000, null, 10);
+          }*/
+        
         carHitHouse(body1, body2) {
             this.collideSound.play();
             //console.log("Hit");
@@ -181,16 +214,20 @@ module states {
                 this.motorSound.stop();
             }
 
+	    if (this.game.input.keyboard.isDown(Phaser.Keyboard.M))
+		this.create_mission();
+	    
             //Update the GUI
             this.cableUsedText.text = String(200 - this.player.cableUsed * this.player.SEGMENT_LENGTH) + "m";
         }
     }
-    function createText(x: number, y: number, color: Phaser.Color, size: number, text: string)
-    {
+
+    function createText(x: number, y: number, color: Phaser.Color, size: number, text: string)  {
         var style = { font: "65px Arial", fill: "#000000", align: "center" };
         var _text = game.add.text(x, y, text, style);
         _text.fontSize = size;
         _text.fill = color;
         return _text;
     }
+
 }
