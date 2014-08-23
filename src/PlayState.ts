@@ -14,13 +14,11 @@ module states {
         preload() {
             this.game.load.image("house1", "assets/house1.png");            
             this.game.load.image("car", "assets/car.png");
-            this.game.load.image("carWheel", "assets/wheel.png");
+            this.game.load.image("park", "assets/park.png");
         }
         
         create() {
-
-            this.game.stage.backgroundColor = 0xAAAAAA;
-            this.game.stage.backgroundColor = 0x000000;
+            this.game.stage.backgroundColor = 0x333333;
             
             var cars = [];
 
@@ -42,19 +40,23 @@ module states {
                     
             for (var y = 50; y < game.height; y += this.HOUSE_SPACE) {
                 for (var x = 50; x < game.width; x += this.HOUSE_SPACE) {
-                    var sprite = houseGroup.create(x, y, "house1");
-                    var spriteBody:Phaser.Physics.P2.Body = sprite.body;
+                    if (Math.random() < 0.25) {
+                        var sprite = houseGroup.create(x, y, "park");
+                    } else {
+                        var sprite = houseGroup.create(x, y, "house1");
+                        var spriteBody:Phaser.Physics.P2.Body = sprite.body;
                     
-                    spriteBody.setRectangle(this.HOUSE_SIZE, this.HOUSE_SIZE);
-                    spriteBody.setCollisionGroup(houseCollisionGroup);                    
-                    spriteBody.collides([houseCollisionGroup, playerCollisionGroup]);
-                    spriteBody.mass = 5;
+                        spriteBody.setRectangle(this.HOUSE_SIZE, this.HOUSE_SIZE);
+                        spriteBody.setCollisionGroup(houseCollisionGroup);                    
+                        spriteBody.collides([houseCollisionGroup, playerCollisionGroup]);
+                        spriteBody.mass = 5;
                     
-                    var spriteLock = this.game.add.sprite(x, y);
-                    this.game.physics.p2.enableBody(spriteLock, false);
-                    spriteLock.body.dynamic = false;
+                        var spriteLock = this.game.add.sprite(x, y);
+                        this.game.physics.p2.enableBody(spriteLock, false);
+                        spriteLock.body.dynamic = false;
                     
-                    this.game.physics.p2.createSpring(sprite, spriteLock, 0.1, 50, 0.5);
+                        this.game.physics.p2.createSpring(sprite, spriteLock, 0.01, 1000, 0.9);
+                    }
                 }
             }
             
