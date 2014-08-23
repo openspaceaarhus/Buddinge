@@ -1,6 +1,9 @@
 /// <reference path="../lib/phaser.d.ts" />
 module states {
     export class Player extends Phaser.Sprite {
+
+	cable : Phaser.Group;
+	
         constructor(game: Phaser.Game, x: number, y: number) {
             super(game, x, y, "car", 0);
             this.anchor.setTo(0.5, 0.5);
@@ -8,7 +11,7 @@ module states {
             game.physics.arcade.enableBody(this);
             game.add.existing(this);
         }
-        
+
         update() 
         {
             this.animations.frame = 0;
@@ -29,5 +32,19 @@ module states {
                 this.body.velocity.y = Math.sin(this.rotation) * 150;
             }
         }
+
+	add_cable() {
+	    this.cable = this.game.add.group();
+
+	    var last = this;
+	    for(var i  0 ; i < 10 ; i_+++) {
+		var  l = new  Phaser.Sprite(this.game, this.body.x, this.body.x);
+		this.cable.add(l);
+
+	    }
+	    
+	    
+
+	}
     }
 }
