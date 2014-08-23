@@ -5,7 +5,7 @@ module states {
         cable		: Phaser.Group;
         MAX_SPEED	: number = 10;
         ROTATION_SPEED	: number = 5;
-        SIZE		: Phaser.Point = new Phaser.Point(32, 20);
+        SIZE		: Phaser.Point = new Phaser.Point(24, 15);
 	ps              : PlayState;
         cableUsed	: number = 0;
         maxCable    : number = 200;
@@ -17,7 +17,7 @@ module states {
         constructor(ps: PlayState, x: number, y: number) {
             super(ps.game, x, y, "car");
             this.anchor.setTo(0.5, 0.5);
-	    this.ps = ps;
+            this.ps = ps;
             this.game.physics.p2.enableBody(this, false);
             var body: Phaser.Physics.P2.Body = this.body;
             body.setRectangle(this.SIZE.x, this.SIZE.y);
