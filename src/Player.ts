@@ -23,7 +23,7 @@ module states {
             body.setRectangle(this.SIZE.x, this.SIZE.y);
             body.mass = 1;
             game.add.existing(this);
-	    this.cable = null;
+            this.cable = null;
         }
 
         update() 
@@ -103,6 +103,7 @@ module states {
 
 	    // update last constrain and last segment
 	    this.last_segment = l;
+        this.bringToTop();
 	}
 
 	remove_segment() {
@@ -110,7 +111,7 @@ module states {
 	}
 	
 	add_cable(N : number)  {        
-            this.cable = this.game.add.group();
+        this.cable = this.game.add.group();
 	    this.cable.enableBody = true;
 	    this.cable.physicsBodyType = Phaser.Physics.P2JS;
 
