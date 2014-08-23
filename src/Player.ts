@@ -23,7 +23,7 @@ module states {
             body.setRectangle(this.SIZE.x, this.SIZE.y);
             body.mass = 1;
             game.add.existing(this);
-            this.add_cable(2);
+	    this.cable = null;
         }
 
         update() 
@@ -62,18 +62,18 @@ module states {
             }
 
 	    if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
-		this.add_segment();
+		if (!this.cable)
+		    this.add_cable(1);
+		else
+		    this.add_segment();
 	    }
-
         }
-
 
 	add_segment() {
-        if(this.cableUsed >= this.maxCable)
-        {
-            return;
-        }
-        this.cableUsed++;
+            if(this.cableUsed >= this.maxCable)  {
+		return;
+            }
+            this.cableUsed++;
 	    var p2 = this.game.physics.p2;
 	    // remove last constrain between this.last_segment and car
 	    if(this.last_constraint)
@@ -86,16 +86,20 @@ module states {
 	    var l = this.cable.create( x, y, 'cable');
 	    var body:Phaser.Physics.P2.Body = l.body;
 	    body.setRectangle(this.SEGMENT_SIZE, this.SEGMENT_SIZE);
-	    body.mass = .1;
+	    body.mass = .01;
 	    body.damping = .7;
 	    body.setMaterial(this.ps.CABLE_MATERIAL);
-        body.setCollisionGroup(this.ps.cableCollisionGroup);
-        body.collides(this.ps.houseCollisionGroup);
-	
+            body.setCollisionGroup(this.ps.cableCollisionGroup);
+            body.collides(this.ps.houseCollisionGroup);
+	    
 	    // add constrain between new segment and car + last segment and new segment
-	    if(this != this.last_segment) 
+	    if(this != this.last_segment)  { 
 		var constraint  = this.game.physics.p2.createDistanceConstraint(l, this.last_segment, this.SEGMENT_SIZE, 1000);
-	    this.last_constraint = this.game.physics.p2.createDistanceConstraint(this, this.last_segment, this.SEGMENT_SIZE, 1000);
+	    } else {
+		// it must be acnhored to ze ground because it is the first segment
+		body.static = true;
+	    }
+	    this.last_constraint = this.game.physics.p2.createDistanceConstraint(l, this, this.SEGMENT_SIZE, 1000);
 
 	    // update last constrain and last segment
 	    this.last_segment = l;
@@ -106,7 +110,7 @@ module states {
 	}
 	
 	add_cable(N : number)  {        
-        this.cable = this.game.add.group();
+            this.cable = this.game.add.group();
 	    this.cable.enableBody = true;
 	    this.cable.physicsBodyType = Phaser.Physics.P2JS;
 
@@ -115,10 +119,6 @@ module states {
 	    
 	    for(var i : number = 0; i < N; i++) {
 		this.add_segment();
-		if (0 == i) {
-		    var body:Phaser.Physics.P2.Body = this.last_segment.body;
-		    body.static = true;
-		}
 	    }
 	}
     }
