@@ -8,7 +8,11 @@ module states {
             super(game, x, y, "car", 0);
             this.anchor.setTo(0.5, 0.5);
             this.animations.add("walk", [0, 1, 2, 3, 4], 10, true);
-            game.physics.arcade.enableBody(this);
+
+            this.game.physics.p2.enableBody(this, false);
+            
+            var body: Phaser.Physics.P2.Body = this.body;
+            body.setRectangle(48, 32);            
             game.add.existing(this);
         }
 
@@ -20,11 +24,11 @@ module states {
             this.body.angularVelocity = 0;
             if(this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) 
             {
-                this.body.angularVelocity = -200;
+                this.body.angularVelocity = -5;
             }
             if(this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) 
             {
-                this.body.angularVelocity = 200;
+                this.body.angularVelocity = 5;
             }
             if(this.game.input.keyboard.isDown(Phaser.Keyboard.UP))
             {
