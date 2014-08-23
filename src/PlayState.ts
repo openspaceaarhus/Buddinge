@@ -5,8 +5,8 @@ module states {
     
     export class PlayState extends Phaser.State {    
         
-        HOUSE_SIZE: number = 64;
-        HOUSE_SPACE: number = 76;
+        HOUSE_SIZE: number = 48;
+        HOUSE_SPACE: number = 56;
 
 	HOUSE_MATERIAL : Phaser.Physics.P2.Material;
 	CABLE_MATERIAL : Phaser.Physics.P2.Material;
@@ -32,6 +32,7 @@ module states {
             this.game.load.image("park", "assets/park.png");
             this.game.load.image("smoke", "assets/smoke.png");
             this.game.load.image("cableUsedIcon", "assets/cableIcon.png");
+            this.game.load.image("asphalt", "assets/asphalt.png");
             
             //this.game.load.audio("ding", "assets/sound/sound_haleding.wav");
             this.game.load.audio("collide", "assets/sound/sound_kollision.wav");
@@ -59,6 +60,7 @@ module states {
             this.game.physics.p2.updateBoundsCollisionGroup();
                                 
             //this.game.add.sprite(100, 100, "car");
+            this.game.add.tileSprite(0, 0, this.game.width, this.game.height, "asphalt");
             
             this.houseGroup = this.game.add.group();
             var houseGroup = this.houseGroup;
@@ -119,7 +121,7 @@ module states {
             this.emitter.setXSpeed(-25, 25);
             this.emitter.setYSpeed(-25, 25);
 
-	       this.player = new Player(this, 300, 300);
+	       this.player = new Player(this, 320, 320);
             
             var body:Phaser.Physics.P2.Body = this.player.body;
             body.setCollisionGroup(playerCollisionGroup);
