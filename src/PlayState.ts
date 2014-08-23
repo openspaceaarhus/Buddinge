@@ -1,10 +1,14 @@
 /// <reference path="../lib/phaser.d.ts" />
 /// <reference path="Player.ts"/>
 module states {
+
     
     export class PlayState extends Phaser.State {
         HOUSE_SIZE: number = 64;
         HOUSE_SPACE: number = 150;
+
+	HOUSE_MATERIAL : Phaser.Physics.P2.Material;
+	CABLE_MATERIAL : Phaser.Physics.P2.Material;
 
         emitter: Phaser.Particles.Arcade.Emitter;
         player: Player;   
@@ -25,6 +29,10 @@ module states {
 
             this.game.physics.startSystem(Phaser.Physics.P2JS);
             this.game.physics.p2.setImpactEvents(true);
+	    this.HOUSE_MATERIAL = this.game.physics.p2.createMaterial();
+	    this.CABLE_MATERIAL = this.game.physics.p2.createMaterial();
+	    var slippery = this.game.physics.p2.createContactMaterial(this.HOUSE_MATERIAL, this.CABLE_MATERIAL, {friction : 0});
+	    this.game.physics.p2.addContactMaterial(slippery);
             
             var playerCollisionGroup = this.game.physics.p2.createCollisionGroup();
             var houseCollisionGroup = this.game.physics.p2.createCollisionGroup();
@@ -37,7 +45,6 @@ module states {
             houseGroup.enableBody = true;
             houseGroup.physicsBodyType = Phaser.Physics.P2JS;
             this.game.physics.p2.friction = 100;
-            
                     
             for (var y = 50; y < game.height; y += this.HOUSE_SPACE) {
                 for (var x = 50; x < game.width; x += this.HOUSE_SPACE) {
@@ -48,6 +55,7 @@ module states {
                     spriteBody.setCollisionGroup(houseCollisionGroup);                    
                     spriteBody.collides([houseCollisionGroup, playerCollisionGroup]);
                     spriteBody.mass = 5;
+		    spriteBody.setMaterial(this.HOUSE_MATERIAL);
                     
                     var spriteLock = this.game.add.sprite(x, y);
                     this.game.physics.p2.enableBody(spriteLock, false);
@@ -57,7 +65,7 @@ module states {
                 }
             }
             
-            this.player = new Player(this.game, 300, 300);
+            this.player = new Player(this, 300, 300);
             
             var body:Phaser.Physics.P2.Body = this.player.body;
             body.setCollisionGroup(playerCollisionGroup);
