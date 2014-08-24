@@ -142,6 +142,12 @@ module states {
             this.nextMotorPlay = game.time.time;
             this.nextPuff = game.time.time;
 
+            var powerup = this.game.add.sprite(56 * 8 + 24, 56 * 2 + 16, "powerup1");
+            powerup.anchor.setTo(0.5, 0.5);
+            
+            var powerup2 = this.game.add.sprite(56 * 9 + 24, 56 * 2 + 16, "powerup2");
+            powerup2.anchor.setTo(0.5, 0.5);
+
             for (var y = 60; y <= game.height; y += this.HOUSE_SPACE*2) {
                 var lastWasCrossing = false;
                 
