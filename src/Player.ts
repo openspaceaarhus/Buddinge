@@ -130,13 +130,8 @@ module states {
 	remove_cable() {
 	    if (!this.cable) return;
 
-	    // this.cable.forEach(function(segment : Phaser.Sprite) {
-	    // 	var a_emitter = this.game.add.emitter(segment.x, segment.y, 1000);            
-	    // 	a_emitter.makeParticles("cable");
-	    // 	a_emitter.gravity = 200;
-	    // 	a_emitter.start(true, 5000, null, 2);
-	    // }, this, false);
 	    var p2 = this.game.physics.p2;
+
 	    // remove last constrain between this.last_segment and car
 	    if(this.last_constraint)
 		p2.removeConstraint(this.last_constraint);
@@ -145,6 +140,8 @@ module states {
 	    this.last_segment = null;
 	    this.last_constraint = null;
 	    this.cable = null;
+	    p2.getConstraints().forEach(function(c : any) { p2.removeConstraint(c);} );
+
 	    
 	}
 	
