@@ -27,10 +27,10 @@ module states {
 	    this.emitter.start(false, 100000, null, 100);
 
 
-            this.createText(20, 100, "#00FF00", 24, "you connected " + (this.ps.player.housesConnected) + " houses");
-            this.createText(20, 200, "#00FF00", 24, "You scored: " + (this.ps.player.score));
-            this.createText(20, 300, "#00FF00", 24, "You played for: " + Math.floor((this.ps.game.time.totalElapsedSeconds() - this.ps.player.gameStarted)) + " seconds");
-	    this.createText(20, 400, "#00FF00", 24, "You laided : " + this.ps.player.cableUsed + " meters of cable");
+            this.createText(20, 100, "#00FF00", 24, "Connected:  " + (this.ps.player.housesConnected) + " houses");
+            this.createText(20, 200, "#00FF00", 24, "Scored:     " + (this.ps.player.score));
+            this.createText(20, 300, "#00FF00", 24, "Played for: " + Math.floor((this.ps.game.time.totalElapsedSeconds() - this.ps.player.gameStarted)) + " seconds");
+	    this.createText(20, 400, "#00FF00", 24, "Cable used: " + this.ps.player.cableUsed + " meters of cable");
 	    this.createText(20, 500, "#FF0000", 24, "Press to play again");
         }
 
