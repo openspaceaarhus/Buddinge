@@ -60,6 +60,18 @@ module states {
 	    this.end_house = this.houseA == house ? this.houseB : this.houseA;
 	}
 
+	end_misstion() {
+	    console.log("YEEEHAW");
+	    this.dingSound.play();
+
+	    var a_emitter = this.game.add.emitter(this.houseA.x, this.houseA.y, 1000);            
+            a_emitter.makeParticles("cable");
+            a_emitter.gravity = 200;
+	    a_emitter.start(true, 5000, null, 10);
+	    
+
+	}
+
 	create_mission() {
 	    if (this.houseB || this.houseA) return;
 	    this.houseA =  this.houseGroup.getRandom(0,0);
@@ -249,8 +261,7 @@ module states {
 	    // check the cable end
 	    if (this.start_house) {
 		if (this.house_hitbox(this.player, this.end_house)) {
-		    console.log("YEEEHAW");
-		    this.dingSound.play();
+		    this.end_misstion();
 		}
 	    }
         }
