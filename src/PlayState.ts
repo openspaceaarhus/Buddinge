@@ -1,5 +1,7 @@
 /// <reference path="../lib/phaser.d.ts" />
 /// <reference path="Player.ts"/>
+/// <reference path="House.ts"/>
+
 module states {
 
     
@@ -27,49 +29,32 @@ module states {
         
         cableUsedText: Phaser.Text;
 
-	houseA : Phaser.Sprite = null;
-	houseB : Phaser.Sprite = null;
-	start_house : Phaser.Sprite = null;
-	end_house : Phaser.Sprite = null;
+	houseA		: House = null;
+	houseB		: House = null;
+	start_house	: House = null;
+	end_house	: House = null;
 
-	hilight_house(house : Phaser.Sprite) {
-	    this.game.add.sprite(house.x, house.y + 24, "hep").anchor.setTo(.5,.5);
-	}
-
-	house_hitbox(p : Phaser.Sprite, house : Phaser.Sprite) : boolean {
-	    var dy = (p.y - house.y);
-	    var dx = (p.x - house.x);
-	    return  Math.abs(dx) < 24 && dy > 24 && dy < 48
-	}
-	
-	can_start_cable(p : Player) : Phaser.Sprite {
+	can_start_cable(p : Player) : House {
 	    if (this.houseB || this.houseA) {
-		if (this.house_hitbox(p, this.houseA)) {
+		if (this.houseA.house_hitbox(p)) {
 		    return this.houseA;
-		} else if (this.house_hitbox(p, this.houseB)) {
+		} else if (this.houseB.house_hitbox(p)) {
 		    return this.houseB;
 		}
 	    }
 	    return null;
 	}
 
-	set_start_house(house:Phaser.Sprite) {
+	set_start_house(house:House) {
 	    this.start_house = house;
 	    this.end_house = this.houseA == house ? this.houseB : this.houseA;
 	}
 
-	celebrate(house: Phaser.Sprite) {
-	    var a_emitter = this.game.add.emitter(house.x, house.y, 1000);            
-            a_emitter.makeParticles("cable");
-            a_emitter.gravity = 200;
-	    a_emitter.start(true, 5000, null, 50);
-	}
-	
 	end_misstion() {
 	    console.log("YEEEHAW");
 	    this.dingSound.play();
-	    this.celebrate(this.houseA);
-	    this.celebrate(this.houseB);
+	    this.houseA.celebrate();
+	    this.houseB.celebrate();
 
 	    // make ready for next mission
 	    this.houseA = null;
@@ -84,12 +69,12 @@ module states {
 
 	create_mission() {
 	    if (this.houseB || this.houseA) return;
-	    this.houseA =  this.houseGroup.getRandom(0,0);
+	    this.houseA =  <House> this.houseGroup.getRandom(0,0);
 	    do {
-		this.houseB = this.houseGroup.getRandom(0,0);
+		this.houseB = <House> this.houseGroup.getRandom(0,0);
 	    } while( this.houseA == this.houseB);
-	    this.hilight_house(this.houseA);
-	    this.hilight_house(this.houseB);
+	    this.houseA.hilight_house();
+	    this.houseB.hilight_house();
 	}
 
         
@@ -109,7 +94,7 @@ module states {
             this.game.load.image("smoke", "assets/smoke.png");
             this.game.load.image("cableUsedIcon", "assets/cableIcon.png");
             this.game.load.image("asphalt", "assets/asphalt.png");
-	       this.game.load.image("hep", "assets/hep.png");
+	    this.game.load.image("hep", "assets/hep.png");
             
             this.game.load.audio("motorsound", "assets/sound/sound_motor.wav");
             this.game.load.audio("ding", "assets/sound/sound_haleding.wav");
@@ -169,7 +154,8 @@ module states {
                         
                     } else {
                         var houseGfx = Math.random() > 0.25 ? "house1" : "house2";
-                        var sprite = houseGroup.create(x, y, houseGfx);
+                        var sprite =  new House(this, x, y, houseGfx);
+			this.houseGroup.add(sprite);
                         var spriteBody:Phaser.Physics.P2.Body = sprite.body;
 			
                         var gardenTag = Math.random() > 0.5 ? "garden1" : "garden2";
@@ -281,7 +267,7 @@ module states {
 
 	    // check the cable end
 	    if (this.start_house) {
-		if (this.house_hitbox(this.player, this.end_house)) {
+		if (this.end_house.house_hitbox(this.player)) {
 		    this.end_misstion();
 		}
 	    }
