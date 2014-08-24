@@ -79,6 +79,9 @@ module states {
 
         
         preload() {
+            this.game.load.image("asphalt", "assets/asphalt.png");
+            this.game.load.image("crossing", "assets/crossing.png");
+            
             this.game.load.image("house1", "assets/house1.png");            
             this.game.load.image("house2", "assets/house2.png");            
 
@@ -94,7 +97,7 @@ module states {
             this.game.load.image("smoke", "assets/smoke.png");
             this.game.load.image("cableUsedIcon", "assets/cableIcon.png");
             this.game.load.image("asphalt", "assets/asphalt.png");
-	    this.game.load.image("hep", "assets/hep.png");
+	        this.game.load.image("hep", "assets/hep.png");
             
             this.game.load.audio("motorsound", "assets/sound/sound_motor.wav");
             this.game.load.audio("ding", "assets/sound/sound_haleding.wav");
@@ -136,8 +139,10 @@ module states {
             this.nextMotorPlay = game.time.time;
             this.nextPuff = game.time.time;
 
-            for (var y = 50; y <= game.height; y += this.HOUSE_SPACE*2) {
-                for (var x = 30; x <= game.width; x += this.HOUSE_SPACE) {
+            for (var y = 60; y <= game.height; y += this.HOUSE_SPACE*2) {
+                var lastWasCrossing = false;
+                
+                for (var x = 24; x <= game.width; x += this.HOUSE_SPACE) {
                     var row = (y - 50) / this.HOUSE_SPACE;
                     var col = (x - 30) / this.HOUSE_SPACE;
                     
@@ -147,11 +152,16 @@ module states {
                         continue;
                     }
                     
-                    if (Math.random() < 0.35) {
-                        var parkGfx = Math.random() > 0.75 ? "park1" : "park2";
-                        var park:Phaser.Sprite = game.add.sprite(x, y, parkGfx);
-                        park.anchor.setTo(0.5, 0.5);
-                        
+                    if (Math.random() < 0.5) {
+                        if (Math.random() < 0.1 || lastWasCrossing) {
+                            var parkGfx = Math.random() > 0.75 ? "park1" : "park2";
+                            var park:Phaser.Sprite = game.add.sprite(x, y, parkGfx);
+                            park.anchor.setTo(0.5, 0.5);
+                            lastWasCrossing = false;
+                        } else {
+                            lastWasCrossing = true;
+                        }
+                                                
                     } else {
                         var houseGfx = Math.random() > 0.25 ? "house1" : "house2";
                         var sprite =  new House(this, x, y, houseGfx);
@@ -180,7 +190,6 @@ module states {
                         spriteLock.body.dynamic = false;
 			
                         this.game.physics.p2.createSpring(sprite, spriteLock, 0.01, 1000, 0.9);
-			//                        this.game.physics.p2.createLockConstraint(spriteBody, spriteLockBody);
                     }
                 }                
             }
