@@ -2,6 +2,7 @@
 /// <reference path="Player.ts"/>
 /// <reference path="House.ts"/>
 /// <reference path="PowerUp.ts"/>
+/// <reference path="BadCar.ts"/>
 module states {
 
     
@@ -14,13 +15,16 @@ module states {
 	CABLE_MATERIAL : Phaser.Physics.P2.Material;
 
         emitter: Phaser.Particles.Arcade.Emitter;
+
         player: Player;   
+        badCar: BadCar;
         
         lastPowerUpSpawn: number = 0;
         
         houseGroup: Phaser.Group;
         houseCollisionGroup: Phaser.Physics.P2.CollisionGroup;
         cableCollisionGroup: Phaser.Physics.P2.CollisionGroup;
+        playerCollisionGroup: Phaser.Physics.P2.CollisionGroup;
         
         collideSound: Phaser.Sound;
         motorSound: Phaser.Sound;
@@ -145,6 +149,7 @@ module states {
 
             
             var playerCollisionGroup = this.game.physics.p2.createCollisionGroup();
+            this.playerCollisionGroup = playerCollisionGroup;
             this.cableCollisionGroup = this.game.physics.p2.createCollisionGroup();
             this.houseCollisionGroup = this.game.physics.p2.createCollisionGroup();
             this.game.physics.p2.updateBoundsCollisionGroup();
@@ -165,12 +170,6 @@ module states {
             
             this.nextMotorPlay = game.time.time;
             this.nextPuff = game.time.time;
-
-            var baddie = this.game.add.sprite(-24, 56 * 2 + 16, "badcar");
-            baddie.anchor.setTo(0.5, 0.5);
-            this.game.add.tween(baddie).to( { x: this.game.width + 24 }, 3000, Phaser.Easing.Linear.None, true, 0, 1000, true);
-            
-            
 
             for (var y = 60; y <= game.height; y += this.HOUSE_SPACE*2) {
                 var lastWasCrossing = false;
@@ -235,7 +234,10 @@ module states {
             this.emitter.setXSpeed(-25, 25);
             this.emitter.setYSpeed(-25, 25);
 
-	    this.player = new Player(this, 320, 320);
+            this.badCar = new BadCar(this, this.game.width / 2, 56 * 2 + 16);
+            this.badCar.body.applyForce([-1, 0], this.badCar.x, this.badCar.y);
+            
+            this.player = new Player(this, 320, 320);
             
             var body:Phaser.Physics.P2.Body = this.player.body;
             body.setCollisionGroup(playerCollisionGroup);
