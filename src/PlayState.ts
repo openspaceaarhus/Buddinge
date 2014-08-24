@@ -96,8 +96,8 @@ module states {
 
             this.game.load.image("car", "assets/car.png");
 
-            this.game.load.image("powerup1", "assets/powerup1.png");
-            this.game.load.image("powerup2", "assets/powerup2.png");
+            this.game.load.image("powerup2", "assets/powerup1.png");
+            this.game.load.image("powerup1", "assets/powerup2.png");
             
             this.game.load.image("smoke", "assets/smoke.png");
             this.game.load.image("cableUsedIcon", "assets/cableIcon.png");
@@ -225,7 +225,7 @@ module states {
             var cableIcon: Phaser.Sprite = game.add.sprite(0, 0, "cableUsedIcon");
             cableIcon.scale.setTo(2, 2);
             cableIcon.smoothed = false;
-            this.cableUsedText = createText(32, -2, "#FFFFFF", 28, String(200 - this.player.cableUsed * this.player.SEGMENT_LENGTH) + "m");
+            this.cableUsedText = createText(32, -2, "#FFFFFF", 28, String(this.player.maxCable - this.player.cableUsed * this.player.SEGMENT_LENGTH) + "m");
             this.cableUsedText.setShadow(-5, -5, 'rgba(0,0,0,0.5)', 5);
             this.cableUsedText.stroke = '#000000';
             this.cableUsedText.strokeThickness = 3;
@@ -277,7 +277,7 @@ module states {
 	    // 	this.create_mission();
 	    
             //Update the GUI
-            this.cableUsedText.text = String(200 - this.player.cableUsed * this.player.SEGMENT_LENGTH) + "m";
+            this.cableUsedText.text = String(this.player.maxCable - this.player.cableUsed * this.player.SEGMENT_LENGTH) + "m";
 
 	    // check the cable end
 	    if (this.start_house) {
@@ -286,15 +286,13 @@ module states {
 		}
 	    }
             
-            if(Math.random() * 100 <= (this.game.time.totalElapsedSeconds() - this.lastPowerUpSpawn) / 3.14)
+            if(Math.random() * 100 <= (this.game.time.totalElapsedSeconds() - this.lastPowerUpSpawn) / (3.14 * 2))
             {
-                var newPowerUp: PowerUp = new PowerUp(this, Math.round(Math.random() * 12) + Math.round(Math.random() * 6) * 100, Math.random() * this.game.width, 1);
-                
+                var newPowerUp: PowerUp = new PowerUp(this, Math.random() * (this.game.width - 8) + 8, Math.round(Math.random() * 6) * 115 + Math.random() * 16 , Math.round(Math.random()) + 1);
                 this.lastPowerUpSpawn = this.game.time.totalElapsedSeconds();
             }
         }
     }
-
     function createText(x: number, y: number, color: Phaser.Color, size: number, text: string)  {
         var style = { font: "65px Arial", fill: "#000000", align: "center" };
         var _text = game.add.text(x, y, text, style);

@@ -2,17 +2,44 @@
 /// <reference path="PlayState.ts"/>
 module states
 {
+    /*export class FadingText extends Phaser.Text
+    {
+        TIME_TO_LIVE: number = 2;
+        timeCreated: number;
+        game: Phaser.Game;
+        constructor(game: Phaser.Game, x: number, y: number, text: string, color: Phaser.Color, size: number)
+        {
+            super(game, x, y, text, { align: "center" });
+            this.fill = color;
+            this.fontSize = size;
+            this.game = game;
+            
+            this.timeCreated = game.time.totalElapsedSeconds();
+            this.game.add.existing(this);
+        }
+        
+        update()
+        {
+            //this.position.y -= 100.0 / 60.0 / this.TIME_TO_LIVE;
+            if(this.timeCreated + this.TIME_TO_LIVE < this.game.time.totalElapsedSeconds())
+            {
+                this.destroy(true);
+            }
+        }
+    }*/
     export class PowerUp extends Phaser.Sprite
     {
         TIME_TO_LIVE: number = 5;
         spawnTime: number;
         type: number;
         ps: PlayState;
-        onPickupText: Phaser.Text;
         constructor(ps: PlayState, x: number, y: number, type: number)
         {
-            super(ps.game, x, y, "PowerUp1");
+            super(ps.game, x, y, "powerup" + String(type));
             this.anchor.setTo(0.5, 0.5);
+            this.game.physics.p2.enableBody(this, false);
+            this.body.setRectangle(16, 16);
+            this.body.static = true;
             
             this.spawnTime = ps.game.time.totalElapsedSeconds();
             this.type = type;
@@ -26,24 +53,34 @@ module states
             if(this.overlap(this.ps.player))
             {
                 //If true then add an effect to the player
-                this.ps.player.addEffect(this.type);
-                var text: string;
+                switch(this.type)
+                {
+                case 2:
+                    this.ps.player.maxCable += 50;
+                    break;
+                default:
+                    this.ps.player.addEffect(this.type);
+                    break;
+                }
+                /*var text: string;
                 switch(this.type)
                 {
                 case 1:
                     text = "Faster car";
                     break;
                 }
-                this.onPickupText = createText(this.ps.player.x, this.ps.player.y, "#000000", 20, text);
+                var onPickupText: FadingText = new FadingText(this.ps.game, this.ps.player.x, this.ps.player.y, text, "#000000", 20);*/
                 this.destroy(true);
             }
             if(this.ps.game.time.totalElapsedSeconds() > (this.spawnTime + this.TIME_TO_LIVE))
             {
                 this.destroy(true);
             }
-            if(this.pu)
-            {
-            }
+        }
+        remove()
+        {
+            console.log(".");
+            this.destroy(true);
         }
     }
      function createText(x: number, y: number, color: Phaser.Color, size: number, text: string)  {
