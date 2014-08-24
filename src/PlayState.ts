@@ -96,9 +96,9 @@ module states {
 	    var mission_list = this.mission_list;
 	    if (! mission_list) {
 		mission_list = new Array<number>();
-		for(var i : number = 0; i < this.houseGroup.countLiving(); i++)
+		for(var i : number = 0; i < this.houseGroup.countLiving(); i++) {
 		    mission_list[mission_list.length] = i;
-
+		}
 		mission_list = this.shuffle(mission_list);
 	    }
 
@@ -106,8 +106,9 @@ module states {
 		console.log("no more missions on this level");
 		return;
 	    }
-	    this.houseA =  <House> this.houseGroup.getAt(mission_list[this.mission_idx++]);
-	    this.houseB =  <House> this.houseGroup.getAt(mission_list[this.mission_idx++]);
+	    this.houseA =  <House> this.houseGroup.getAt(mission_list[this.mission_idx]);
+	    this.houseB =  <House> this.houseGroup.getAt(mission_list[this.mission_idx+1]);
+	    this.mission_idx += 2;
 	    this.houseA.hilight_house();
 	    this.houseB.hilight_house();
 	}
