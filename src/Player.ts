@@ -13,6 +13,9 @@ module states {
 	last_constraint  : any; //Phaser.Physics.P2.Constraint;
 	SEGMENT_SIZE    : number = 5;
         SEGMENT_LENGTH: number = 1;
+        
+        powerUpsEffectTime: {[s: number]: number} = {};
+        powerUpTakenTime: {[s: number]: number} = {};
 
         constructor(ps: PlayState, x: number, y: number) {
             super(ps.game, x, y, "car");
@@ -24,6 +27,13 @@ module states {
             body.mass = 2;
             game.add.existing(this);
             this.cable = null;
+            
+            //Reset the power ups
+            for(var i = 1; i<=1; i++)
+            {
+                this.powerUpTakenTime[i] = 0;
+                this.powerUpsEffectTime[i]
+            }
         }
 
         update()  {
@@ -59,6 +69,25 @@ module states {
 	    }
 
 	    // Manually do a check for 
+            
+            
+            //Check the effects
+            for(var i = 1; i<=1; i++)
+            {
+                if(this.powerUpTakenTime[i] + this.powerUpsEffectTime[i] < this.ps.game.time.totalElapsedSeconds())
+                {
+                    //Remove the effects
+                    switch(i)
+                    {
+                    //Faster car
+                    case 1:
+                        this.MAX_SPEED = 20;
+                        break;
+                    }
+                    this.powerUpsEffectTime[i] = 0;
+                    this.powerUpTakenTime[i] = 0;
+                }
+            }
         }
 
 	add_segment() {
@@ -131,5 +160,24 @@ module states {
 		this.add_segment();
 	    }
 	}
+        addEffect(type: number)
+        {
+            //Add the effect
+            if(this.powerUpTakenTime[type] == 0)
+            {
+                this.powerUpTakenTime[type] = this.ps.game.time.totalElapsedSeconds();
+                this.powerUpsEffectTime[type] = 20;
+                switch(type)
+                {
+                case 1:
+                    this.MAX_SPEED = 30;
+                    break;
+                }
+            }
+            else if(this.powerUpTakenTime[type] > 0)
+            {
+                this.powerUpsEffectTime[type] += 20;
+            }
+        }
     }
 }

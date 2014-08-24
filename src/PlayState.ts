@@ -1,7 +1,7 @@
 /// <reference path="../lib/phaser.d.ts" />
 /// <reference path="Player.ts"/>
 /// <reference path="House.ts"/>
-
+/// <reference path="PowerUp.ts"/>
 module states {
 
     
@@ -15,6 +15,8 @@ module states {
 
         emitter: Phaser.Particles.Arcade.Emitter;
         player: Player;   
+        
+        lastPowerUpSpawn: number = 0;
         
         houseGroup: Phaser.Group;
         houseCollisionGroup: Phaser.Physics.P2.CollisionGroup;
@@ -271,6 +273,13 @@ module states {
 		    this.end_misstion();
 		}
 	    }
+            
+            if(Math.random() * 100 <= (this.game.time.totalElapsedSeconds() - this.lastPowerUpSpawn) / 3.14)
+            {
+                var newPowerUp: PowerUp = new PowerUp(this, Math.round(Math.random() * 12) + Math.round(Math.random() * 6) * 100, Math.random() * this.game.width, 1);
+                
+                this.lastPowerUpSpawn = this.game.time.totalElapsedSeconds();
+            }
         }
     }
 
