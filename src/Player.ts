@@ -16,6 +16,10 @@ module states {
         
         powerUpsEffectTime: {[s: number]: number} = {};
         powerUpTakenTime: {[s: number]: number} = {};
+        
+        housesConnected: number = 0;
+        missionStartTime: number = 0;
+        score: number = 0;
 
         constructor(ps: PlayState, x: number, y: number) {
             super(ps.game, x, y, "car");

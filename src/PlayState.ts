@@ -71,6 +71,9 @@ module states {
 
 	    // create next mission ?
 	    this.create_mission();
+        
+        this.player.housesConnected += 2;
+        this.player.score += 120 < this.game.time.totalElapsedSeconds() - this.player.missionStartTime ? 10 : 120 - (this.game.time.totalElapsedSeconds() - this.player.missionStartTime) + 10;
 	}
 
 	
@@ -113,6 +116,7 @@ module states {
 	    this.mission_idx += 2;
 	    this.houseA.hilight_house();
 	    this.houseB.hilight_house();
+        this.player.missionStartTime = this.game.time.totalElapsedSeconds();
 	}
 
         
