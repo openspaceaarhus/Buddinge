@@ -265,13 +265,11 @@ module states {
             this.cableUsedText.stroke = '#000000';
             this.cableUsedText.strokeThickness = 3;
             
-            this.activeEffectsIcon = game.add.sprite(200, 0, "powerup1");
+            this.activeEffectsIcon = game.add.sprite(20, this.game.height - 40, "powerup1");
             this.activeEffectsIcon.alpha = 1;
-            this.activeEffectsText = createText(222, 6, "#FFFFFF", 14, "TEST");
+            this.activeEffectsText = createText(22, this.game.height - 36, "#FFFFFF", 14, "TEST");
             this.activeEffectsText.stroke = "#000000";
             this.activeEffectsText.strokeThickness = 1;
-            
-
 
 	    this.reset_mission();
         }
