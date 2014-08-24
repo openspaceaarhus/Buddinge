@@ -21,7 +21,7 @@ module states {
             this.game.physics.p2.enableBody(this, false);
             var body: Phaser.Physics.P2.Body = this.body;
             body.setRectangle(this.SIZE.x, this.SIZE.y);
-            body.mass = .1;
+            body.mass = 1;
             game.add.existing(this);
             this.cable = null;
         }

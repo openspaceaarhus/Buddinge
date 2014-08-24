@@ -83,7 +83,7 @@ module states {
             this.game.load.image("smoke", "assets/smoke.png");
             this.game.load.image("cableUsedIcon", "assets/cableIcon.png");
             this.game.load.image("asphalt", "assets/asphalt.png");
-	    this.game.load.image("hep", "assets/hep.png");
+	    this.game.load.image("hep", "assets/particle.png");
             
             this.game.load.audio("ding", "assets/sound/sound_haleding.wav");
             this.game.load.audio("collide", "assets/sound/sound_kollision.wav");
@@ -141,7 +141,6 @@ module states {
                         var park:Phaser.Sprite = game.add.sprite(x, y, parkGfx);
                         park.anchor.setTo(0.5, 0.5);
                         
-                        
                     } else {
                         var houseGfx = Math.random() > 0.25 ? "house1" : "house2";
                         var sprite = houseGroup.create(x, y, houseGfx);
@@ -164,13 +163,13 @@ module states {
                         this.game.physics.p2.createSpring(sprite, spriteLock, 0.01, 1000, 0.9);
 			//                        this.game.physics.p2.createLockConstraint(spriteBody, spriteLockBody);
                     }
-                }
+                }                
             }
             
             this.emitter = this.game.add.emitter(0, 0, 100);            
             this.emitter.makeParticles("smoke");
             this.emitter.gravity = 0;
-            this.emitter.setScale(0.1, 1, 0.1, 1, 1000, Phaser.Easing.Cubic.InOut, false);  
+            this.emitter.setScale(0.3, 2, 0.3, 2, 1000, Phaser.Easing.Cubic.InOut, false);  
             this.emitter.setAlpha(0.25, 0, 2000);
             this.emitter.setXSpeed(-25, 25);
             this.emitter.setYSpeed(-25, 25);
@@ -219,6 +218,11 @@ module states {
             this.game.add.tween(this.game.camera)
 		.to({ y: -5 }, 40, Phaser.Easing.Sinusoidal.InOut, false, 0, 5, true)
 		.start();
+            
+            this.emitter.x = body2.x;
+            this.emitter.y = body2.y + body2.sprite.height * 0.25;
+            this.emitter.start(true, 1000, null, 5);
+
         }
         
         update() {
@@ -234,10 +238,8 @@ module states {
                     this.emitter.start(true, 1000, null, 10);                    
                     this.nextPuff = this.game.time.time + 100;
                 }
-            } else {
-                this.motorSound.stop();
             }
-
+            
 	    // if (this.game.input.keyboard.isDown(Phaser.Keyboard.M))
 	    // 	this.create_mission();
 	    
