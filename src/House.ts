@@ -27,6 +27,10 @@ module states {
             a_emitter.gravity = 200;
 	    a_emitter.start(true, 5000, null, 50);
 	    this.is_connected = true;
+	    this.high_light.destroy();
+	    this.high_light = this.game.add.sprite(this.x, this.y + 24, "connected");
+	    this.high_light.anchor.setTo(.5,.5);
+	    
 	}
 
 	
