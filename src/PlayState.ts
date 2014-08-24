@@ -60,16 +60,27 @@ module states {
 	    this.end_house = this.houseA == house ? this.houseB : this.houseA;
 	}
 
+	celebrate(house: Phaser.Sprite) {
+	    var a_emitter = this.game.add.emitter(house.x, house.y, 1000);            
+            a_emitter.makeParticles("cable");
+            a_emitter.gravity = 200;
+	    a_emitter.start(true, 5000, null, 50);
+	}
+	
 	end_misstion() {
 	    console.log("YEEEHAW");
 	    this.dingSound.play();
+	    this.celebrate(this.houseA);
+	    this.celebrate(this.houseB);
 
-	    var a_emitter = this.game.add.emitter(this.houseA.x, this.houseA.y, 1000);            
-            a_emitter.makeParticles("cable");
-            a_emitter.gravity = 200;
-	    a_emitter.start(true, 5000, null, 10);
-	    
+	    // make ready for next mission
+	    this.houseA = null;
+	    this.houseB = null;
+	    this.start_house = null;
+	    this.end_house = null;
 
+	    // create next mission ?
+	    this.create_mission();
 	}
 
 	create_mission() {
