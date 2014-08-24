@@ -83,7 +83,7 @@ module states {
             this.game.load.image("smoke", "assets/smoke.png");
             this.game.load.image("cableUsedIcon", "assets/cableIcon.png");
             this.game.load.image("asphalt", "assets/asphalt.png");
-	    this.game.load.image("hep", "assets/particle.png");
+	       this.game.load.image("hep", "assets/hep.png");
             
             this.game.load.audio("ding", "assets/sound/sound_haleding.wav");
             this.game.load.audio("collide", "assets/sound/sound_kollision.wav");

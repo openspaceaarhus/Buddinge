@@ -21,7 +21,7 @@ module states {
             this.game.physics.p2.enableBody(this, false);
             var body: Phaser.Physics.P2.Body = this.body;
             body.setRectangle(this.SIZE.x, this.SIZE.y);
-            body.mass = 1;
+            body.mass = 2;
             game.add.existing(this);
             this.cable = null;
         }
@@ -79,7 +79,7 @@ module states {
 	    var l = this.cable.create( x, y, 'cable');
 	    var body:Phaser.Physics.P2.Body = l.body;
 	    body.setRectangle(this.SEGMENT_SIZE, this.SEGMENT_SIZE);
-	    body.mass = .01;
+	    body.mass = .02;
 	    body.damping = .7;
 	    body.setMaterial(this.ps.CABLE_MATERIAL);
             body.setCollisionGroup(this.ps.cableCollisionGroup);
