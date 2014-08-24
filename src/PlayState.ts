@@ -93,6 +93,9 @@ module states {
             this.game.load.image("park2", "assets/park2.png");
 
             this.game.load.image("car", "assets/car.png");
+
+            this.game.load.image("powerup1", "assets/powerup1.png");
+            this.game.load.image("powerup2", "assets/powerup2.png");
             
             this.game.load.image("smoke", "assets/smoke.png");
             this.game.load.image("cableUsedIcon", "assets/cableIcon.png");
