@@ -45,6 +45,8 @@ module states
             this.type = type;
             this.ps = ps;
             ps.game.add.existing(this);
+            
+            ps.game.add.tween(this).to( { alpha: 0.5 }, 600, Phaser.Easing.Linear.None, true, 0, 1000, true);
         }
         
         update()
@@ -62,6 +64,9 @@ module states
                     this.ps.player.addEffect(this.type);
                     break;
                 }
+                
+                this.ps.powerupSound.play();
+                
                 /*var text: string;
                 switch(this.type)
                 {

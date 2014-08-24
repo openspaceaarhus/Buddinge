@@ -24,6 +24,7 @@ module states {
         
         collideSound: Phaser.Sound;
         motorSound: Phaser.Sound;
+        powerupSound: Phaser.Sound;
 	dingSound: Phaser.Sound;
         
         nextMotorPlay: number;
@@ -129,6 +130,7 @@ module states {
             this.game.load.image("park2", "assets/park2.png");
 
             this.game.load.image("car", "assets/car.png");
+            this.game.load.image("badcar", "assets/badcar.png");
 
             this.game.load.image("powerup2", "assets/powerup1.png");
             this.game.load.image("powerup1", "assets/powerup2.png");
@@ -141,6 +143,7 @@ module states {
             this.game.load.audio("motorsound", "assets/sound/sound_motor.wav");
             this.game.load.audio("ding", "assets/sound/sound_haleding.wav");
             this.game.load.audio("collide", "assets/sound/sound_kollision.wav");
+            this.game.load.audio("powerup", "assets/sound/sound_powerup.wav");
             //this.game.load.audio("motorstrained", "assets/sound/sound_motorbelastet.wav");
         }
         
@@ -173,16 +176,18 @@ module states {
             this.game.physics.p2.friction = 100;
             
             this.collideSound = this.game.add.sound("collide");
-	    this.dingSound = this.game.add.sound("ding");
+	        this.dingSound = this.game.add.sound("ding");
             this.motorSound = this.game.add.sound("motorsound");            
+            this.powerupSound = this.game.add.sound("powerup");
+            
             this.nextMotorPlay = game.time.time;
             this.nextPuff = game.time.time;
 
-            var powerup = this.game.add.sprite(56 * 8 + 24, 56 * 2 + 16, "powerup1");
-            powerup.anchor.setTo(0.5, 0.5);
+            var baddie = this.game.add.sprite(-24, 56 * 2 + 16, "badcar");
+            baddie.anchor.setTo(0.5, 0.5);
+            this.game.add.tween(baddie).to( { x: this.game.width + 24 }, 3000, Phaser.Easing.Linear.None, true, 0, 1000, true);
             
-            var powerup2 = this.game.add.sprite(56 * 9 + 24, 56 * 2 + 16, "powerup2");
-            powerup2.anchor.setTo(0.5, 0.5);
+            
 
             for (var y = 60; y <= game.height; y += this.HOUSE_SPACE*2) {
                 var lastWasCrossing = false;
