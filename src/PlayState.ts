@@ -128,6 +128,7 @@ module states {
             this.game.load.image("park2", "assets/park2.png");
 
             this.game.load.image("car", "assets/car.png");
+            this.game.load.image("badcar", "assets/badcar.png");
 
             this.game.load.image("powerup2", "assets/powerup1.png");
             this.game.load.image("powerup1", "assets/powerup2.png");
@@ -177,11 +178,11 @@ module states {
             this.nextMotorPlay = game.time.time;
             this.nextPuff = game.time.time;
 
-            var powerup = this.game.add.sprite(56 * 8 + 24, 56 * 2 + 16, "powerup1");
-            powerup.anchor.setTo(0.5, 0.5);
+            var baddie = this.game.add.sprite(-24, 56 * 2 + 16, "badcar");
+            baddie.anchor.setTo(0.5, 0.5);
+            this.game.add.tween(baddie).to( { x: this.game.width + 24 }, 3000, Phaser.Easing.Linear.None, true, 0, 1000, true);
             
-            var powerup2 = this.game.add.sprite(56 * 9 + 24, 56 * 2 + 16, "powerup2");
-            powerup2.anchor.setTo(0.5, 0.5);
+            
 
             for (var y = 60; y <= game.height; y += this.HOUSE_SPACE*2) {
                 var lastWasCrossing = false;
