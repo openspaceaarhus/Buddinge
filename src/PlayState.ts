@@ -53,15 +53,15 @@ module states {
 	    this.end_house = this.houseA == house ? this.houseB : this.houseA;
 	}
 
-	end_misstion() {
-	    console.log("YEEEHAW");
-	    this.dingSound.play();
-	    this.houseA.celebrate();
-	    this.houseB.celebrate();
-
-	    // make ready for next mission
+	end_mission() {
 	    this.houseA = null;
 	    this.houseB = null;
+
+	    this.dingSound.play();
+	    this.start_house.celebrate();
+	    this.end_house.celebrate();
+
+	    // make ready for next mission
 	    this.start_house = null;
 	    this.end_house = null;
 	    this.player.remove_cable();
@@ -76,11 +76,9 @@ module states {
 	    
 	    // While there remain elements to shuffle...
 	    while (0 !== currentIndex) {
-		
 		// Pick a remaining element...
 		randomIndex = Math.floor(Math.random() * currentIndex);
 		currentIndex -= 1;
-
 		// And swap it with the current element.
 		temporaryValue = array[currentIndex];
 		array[currentIndex] = array[randomIndex];
@@ -114,38 +112,6 @@ module states {
 	    this.houseB.hilight_house();
 	}
 
-        
-        preload() {
-            this.game.load.image("asphalt", "assets/asphalt.png");
-            this.game.load.image("crossing", "assets/crossing.png");
-            
-            this.game.load.image("house1", "assets/house1.png");            
-            this.game.load.image("house2", "assets/house2.png");            
-
-            this.game.load.image("garden1", "assets/garden1.png");
-            this.game.load.image("garden2", "assets/garden2.png");
-            this.game.load.image("garden3", "assets/garden3.png");
-
-            this.game.load.image("park1", "assets/park.png");
-            this.game.load.image("park2", "assets/park2.png");
-
-            this.game.load.image("car", "assets/car.png");
-            this.game.load.image("badcar", "assets/badcar.png");
-
-            this.game.load.image("powerup2", "assets/powerup1.png");
-            this.game.load.image("powerup1", "assets/powerup2.png");
-            
-            this.game.load.image("smoke", "assets/smoke.png");
-            this.game.load.image("cableUsedIcon", "assets/cableIcon.png");
-            this.game.load.image("asphalt", "assets/asphalt.png");
-	        this.game.load.image("hep", "assets/hep.png");
-            
-            this.game.load.audio("motorsound", "assets/sound/sound_motor.wav");
-            this.game.load.audio("ding", "assets/sound/sound_haleding.wav");
-            this.game.load.audio("collide", "assets/sound/sound_kollision.wav");
-            this.game.load.audio("powerup", "assets/sound/sound_powerup.wav");
-            //this.game.load.audio("motorstrained", "assets/sound/sound_motorbelastet.wav");
-        }
         
         create() {
             this.game.stage.backgroundColor = 0x333333;
@@ -327,7 +293,7 @@ module states {
 	    // check the cable end
 	    if (this.start_house) {
 		if (this.end_house.house_hitbox(this.player)) {
-		    this.end_misstion();
+		    this.end_mission();
 		}
 	    }
             
