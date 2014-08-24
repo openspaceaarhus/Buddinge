@@ -16,6 +16,10 @@ module states {
         
         powerUpsEffectTime: {[s: number]: number} = {};
         powerUpTakenTime: {[s: number]: number} = {};
+        
+        housesConnected: number = 0;
+        missionStartTime: number = 0;
+        score: number = 0;
 
         constructor(ps: PlayState, x: number, y: number) {
             super(ps.game, x, y, "car");
@@ -29,7 +33,7 @@ module states {
             this.cable = null;
             
             //Reset the power ups
-            for(var i = 1; i<=1; i++)
+            for(var i = 1; i<=PowerUp.NUMBER_OF_POWERUPS; i++)
             {
                 this.powerUpTakenTime[i] = 0;
                 this.powerUpsEffectTime[i]
@@ -53,7 +57,7 @@ module states {
                 this.body.applyForce([Math.cos(this.rotation) * this.MAX_SPEED / 2.0, Math.sin(this.rotation) * this.MAX_SPEED / 2.0], this.x + Math.cos(this.rotation) * -this.SIZE.x / 2.0, this.y + Math.sin(this.rotation) * -this.SIZE.y / 2.0);
             } else {
                 this.body.damping = 0.7;
-	    }
+            }
 
 	    if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
 		if (!this.cable ) {
@@ -72,7 +76,7 @@ module states {
             
             
             //Check the effects
-            for(var i = 1; i<=1; i++)
+            for(var i = 1; i<=PowerUp.NUMBER_OF_POWERUPS; i++)
             {
                 if(this.powerUpTakenTime[i] + this.powerUpsEffectTime[i] < this.ps.game.time.totalElapsedSeconds())
                 {

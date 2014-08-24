@@ -31,6 +31,9 @@ module states {
         nextPuff: number;
         
         cableUsedText: Phaser.Text;
+        
+        activeEffectsIcon: Phaser.Sprite;
+        activeEffectsText: Phaser.Text;
 
 	houseA		: House = null;
 	houseB		: House = null;
@@ -68,6 +71,9 @@ module states {
 
 	    // create next mission ?
 	    this.create_mission();
+        
+        this.player.housesConnected += 2;
+        this.player.score += 120 < this.game.time.totalElapsedSeconds() - this.player.missionStartTime ? 10 : 120 - (this.game.time.totalElapsedSeconds() - this.player.missionStartTime) + 10;
 	}
 
 	
@@ -110,6 +116,7 @@ module states {
 	    this.mission_idx += 2;
 	    this.houseA.hilight_house();
 	    this.houseB.hilight_house();
+        this.player.missionStartTime = this.game.time.totalElapsedSeconds();
 	}
 
 	reset_mission() {
@@ -250,6 +257,13 @@ module states {
             this.cableUsedText.setShadow(-5, -5, 'rgba(0,0,0,0.5)', 5);
             this.cableUsedText.stroke = '#000000';
             this.cableUsedText.strokeThickness = 3;
+            
+            this.activeEffectsIcon = game.add.sprite(200, 0, "powerup1");
+            this.activeEffectsIcon.alpha = 1;
+            this.activeEffectsText = createText(222, 6, "#FFFFFF", 14, "TEST");
+            this.activeEffectsText.stroke = "#000000";
+            this.activeEffectsText.strokeThickness = 1;
+            
 
 
 	    this.reset_mission();
@@ -302,7 +316,26 @@ module states {
 	    
             //Update the GUI
             this.cableUsedText.text = String(this.player.maxCable - this.player.cableUsed * this.player.SEGMENT_LENGTH) + "m";
-
+            
+            this.activeEffectsText.text = "";
+            var shouldDisplayEffectIcon: boolean = false;
+            for(var i = 1; i<=PowerUp.NUMBER_OF_POWERUPS; i++)
+            {
+                if(this.player.powerUpTakenTime[i] != 0)
+                {
+                    shouldDisplayEffectIcon = true;
+                    var temp: string = "";
+                    switch(i)
+                    {
+                    case 1:
+                        temp += "FASTER ";
+                        break;
+                    }
+                    this.activeEffectsText.text += temp;
+                }
+            }
+            this.activeEffectsIcon.alpha = Number(shouldDisplayEffectIcon);
+            
 	    // check the cable end
 	    if (this.start_house) {
 		if (this.end_house.house_hitbox(this.player)) {
