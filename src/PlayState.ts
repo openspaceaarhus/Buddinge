@@ -69,12 +69,45 @@ module states {
 	    this.create_mission();
 	}
 
+	
+	shuffle(array : number[]) : number[] {
+	    var currentIndex = array.length, temporaryValue, randomIndex ;
+	    
+	    // While there remain elements to shuffle...
+	    while (0 !== currentIndex) {
+		
+		// Pick a remaining element...
+		randomIndex = Math.floor(Math.random() * currentIndex);
+		currentIndex -= 1;
+
+		// And swap it with the current element.
+		temporaryValue = array[currentIndex];
+		array[currentIndex] = array[randomIndex];
+		array[randomIndex] = temporaryValue;
+	    }
+	    return array;
+	}
+
+	mission_list : number[] = null;
+	mission_idx : number = 0;
+	
 	create_mission() {
-	    if (this.houseB || this.houseA) return;
-	    this.houseA =  <House> this.houseGroup.getRandom(0,0);
-	    do {
-		this.houseB = <House> this.houseGroup.getRandom(0,0);
-	    } while( this.houseA == this.houseB);
+	    if (this.houseB || this.houseA) return; // means that a mission is active
+	    var mission_list = this.mission_list;
+	    if (! mission_list) {
+		mission_list = new Array<number>();
+		for(var i : number = 0; i < this.houseGroup.countLiving(); i++)
+		    mission_list[mission_list.length] = i;
+
+		mission_list = this.shuffle(mission_list);
+	    }
+
+	    if (this.mission_idx +2 >= mission_list.length) {
+		console.log("no more missions on this level");
+		return;
+	    }
+	    this.houseA =  <House> this.houseGroup.getAt(mission_list[this.mission_idx++]);
+	    this.houseB =  <House> this.houseGroup.getAt(mission_list[this.mission_idx++]);
 	    this.houseA.hilight_house();
 	    this.houseB.hilight_house();
 	}
@@ -143,6 +176,12 @@ module states {
             this.motorSound = this.game.add.sound("motorsound");            
             this.nextMotorPlay = game.time.time;
             this.nextPuff = game.time.time;
+
+            var powerup = this.game.add.sprite(56 * 8 + 24, 56 * 2 + 16, "powerup1");
+            powerup.anchor.setTo(0.5, 0.5);
+            
+            var powerup2 = this.game.add.sprite(56 * 9 + 24, 56 * 2 + 16, "powerup2");
+            powerup2.anchor.setTo(0.5, 0.5);
 
             for (var y = 60; y <= game.height; y += this.HOUSE_SPACE*2) {
                 var lastWasCrossing = false;
