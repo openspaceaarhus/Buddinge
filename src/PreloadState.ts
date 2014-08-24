@@ -13,6 +13,7 @@ module states {
             this.load.image("plug", "assets/plug.png");
             this.load.image("car1", "OSAA_LOGO.png");
             this.load.image("level1", "assets/level1.png");
+	    this.load.image("connected", "assets/connected.png");
             this.load.audio("zap", "assets/zap.wav");
         }
         
