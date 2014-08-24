@@ -30,7 +30,7 @@ module states
     export class PowerUp extends Phaser.Sprite
     {
         static NUMBER_OF_POWERUPS: number = 2;
-        TIME_TO_LIVE: number = 5;
+        TIME_TO_LIVE: number = 20;
         spawnTime: number;
         type: number;
         ps: PlayState;

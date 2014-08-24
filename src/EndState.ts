@@ -18,7 +18,9 @@ module states {
             
             this.add.tween(this.background).to({ alpha: 1}, 2000, Phaser.Easing.Elastic.InOut, true);
             this.input.onDown.addOnce(this.fadeOut, this);
-	    console.log("you connected " + (this.ps.mission_idx)/2 );
+            console.log("you connected " + (this.ps.player.housesConnected) + " houses");
+            console.log("You scored: " + (this.ps.player.score));
+            console.log("You played for: " + (this.ps.game.time.totalElapsedSeconds() - this.ps.player.gameStarted));
         }
         
         fadeOut() {

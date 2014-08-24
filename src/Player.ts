@@ -20,6 +20,7 @@ module states {
         housesConnected: number = 0;
         missionStartTime: number = 0;
         score: number = 0;
+        gameStarted: number;
 
         constructor(ps: PlayState, x: number, y: number) {
             super(ps.game, x, y, "car");
@@ -31,7 +32,7 @@ module states {
             body.mass = 2;
             game.add.existing(this);
             this.cable = null;
-            
+            this.gameStarted = game.time.totalElapsedSeconds();
             //Reset the power ups
             for(var i = 1; i<=PowerUp.NUMBER_OF_POWERUPS; i++)
             {
