@@ -118,6 +118,7 @@ module states {
 
 	    if (this.mission_idx +2 >= mission_list.length) {
 		console.log("no more missions on this level");
+		this.game.state.start("end");
 		return;
 	    }
 	    this.houseA =  <House> this.houseGroup.getAt(mission_list[this.mission_idx]);
