@@ -18,11 +18,30 @@ module states {
             
             this.add.tween(this.background).to({ alpha: 1}, 2000, Phaser.Easing.Elastic.InOut, true);
             this.input.onDown.addOnce(this.fadeOut, this);
-            console.log("you connected " + (this.ps.player.housesConnected) + " houses");
-            console.log("You scored: " + (this.ps.player.score));
-            console.log("You played for: " + (this.ps.game.time.totalElapsedSeconds() - this.ps.player.gameStarted));
+	    
+            this.createText(20, 100, "#00FF00", 24, "you connected " + (this.ps.player.housesConnected) + " houses");
+            this.createText(20, 200, "#00FF00", 24, "You scored: " + (this.ps.player.score));
+            this.createText(20, 300, "#00FF00", 24, "You played for: " + Math.floor((this.ps.game.time.totalElapsedSeconds() - this.ps.player.gameStarted)) + " seconds");
+	    this.createText(20, 300, "#00FF00", 24, "You laided : " + this.ps.player.cableUsed + " meters of cable");
+	    this.createText(20, 500, "#FF0000", 24, "Press to play again");
         }
-        
+
+	update() {
+	    // if (this.game.input.keyboard.isDown(Phaser.Keyboard.ANY)) fadeOut();
+
+	}
+
+	createText(x: number, y: number, color: Phaser.Color, size: number, text: string)  {
+	    // I AM COPY PASTE FROM PLAYERSTATE
+            var style = { font: "65px Arial", fill: "#000000", align: "center" };
+            var _text = game.add.text(x, y, text, style);
+            _text.fontSize = size;
+            _text.fill = color;
+            return _text;
+	}
+
+
+	
         fadeOut() {
             this.game.state.start("play", true, false);
         }
