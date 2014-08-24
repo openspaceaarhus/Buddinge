@@ -26,6 +26,10 @@ module states {
             a_emitter.makeParticles("connected");
             a_emitter.gravity = 200;
 	    a_emitter.start(true, 5000, null, 50);
+        
+            a_emitter.setScale(0.3, 2, 0.3, 2, 1000, Phaser.Easing.Cubic.InOut, false);  
+            a_emitter.setAlpha(1, 0, 2000);
+        
 	    this.is_connected = true;
 	    this.high_light.destroy();
 	    this.high_light = this.game.add.sprite(this.x, this.y + 24, "connected");
