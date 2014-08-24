@@ -24,6 +24,7 @@ module states {
         
         collideSound: Phaser.Sound;
         motorSound: Phaser.Sound;
+        powerupSound: Phaser.Sound;
 	dingSound: Phaser.Sound;
         
         nextMotorPlay: number;
@@ -141,6 +142,7 @@ module states {
             this.game.load.audio("motorsound", "assets/sound/sound_motor.wav");
             this.game.load.audio("ding", "assets/sound/sound_haleding.wav");
             this.game.load.audio("collide", "assets/sound/sound_kollision.wav");
+            this.game.load.audio("powerup", "assets/sound/sound_powerup.wav");
             //this.game.load.audio("motorstrained", "assets/sound/sound_motorbelastet.wav");
         }
         
@@ -173,8 +175,10 @@ module states {
             this.game.physics.p2.friction = 100;
             
             this.collideSound = this.game.add.sound("collide");
-	    this.dingSound = this.game.add.sound("ding");
+	        this.dingSound = this.game.add.sound("ding");
             this.motorSound = this.game.add.sound("motorsound");            
+            this.powerupSound = this.game.add.sound("powerup");
+            
             this.nextMotorPlay = game.time.time;
             this.nextPuff = game.time.time;
 

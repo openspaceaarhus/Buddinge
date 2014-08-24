@@ -64,6 +64,9 @@ module states
                     this.ps.player.addEffect(this.type);
                     break;
                 }
+                
+                this.ps.powerupSound.play();
+                
                 /*var text: string;
                 switch(this.type)
                 {
