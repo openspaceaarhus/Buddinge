@@ -108,9 +108,9 @@ module states {
             this.game.load.image("asphalt", "assets/asphalt.png");
 	       this.game.load.image("hep", "assets/hep.png");
             
+            this.game.load.audio("motorsound", "assets/sound/sound_motor.wav");
             this.game.load.audio("ding", "assets/sound/sound_haleding.wav");
             this.game.load.audio("collide", "assets/sound/sound_kollision.wav");
-            this.game.load.audio("motorsound", "assets/sound/sound_motor.wav", true);
             //this.game.load.audio("motorstrained", "assets/sound/sound_motorbelastet.wav");
         }
         
