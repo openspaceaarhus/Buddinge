@@ -98,6 +98,10 @@ module states {
             this.game.load.image("house1", "assets/house1.png");            
             this.game.load.image("house2", "assets/house2.png");            
 
+            this.game.load.image("garden1", "assets/garden1.png");
+            this.game.load.image("garden2", "assets/garden2.png");
+            this.game.load.image("garden3", "assets/garden3.png");
+
             this.game.load.image("park1", "assets/park.png");
             this.game.load.image("park2", "assets/park2.png");
 
@@ -169,6 +173,13 @@ module states {
                         var sprite = houseGroup.create(x, y, houseGfx);
                         var spriteBody:Phaser.Physics.P2.Body = sprite.body;
 			
+                        var gardenTag = Math.random() > 0.5 ? "garden1" : "garden2";
+                        if (Math.random() > 0.5) {
+                            gardenTag = "garden3";
+                        }
+                        var garden = this.game.add.sprite(x, y + sprite.height, gardenTag);
+                        garden.anchor.set(0.5, 1);
+                        
                         spriteBody.setRectangle(this.HOUSE_SIZE, this.HOUSE_SIZE);
                         spriteBody.setCollisionGroup(this.houseCollisionGroup);                    
                         spriteBody.collides([this.houseCollisionGroup, playerCollisionGroup, this.cableCollisionGroup]);
