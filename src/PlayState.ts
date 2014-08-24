@@ -44,6 +44,8 @@ module states {
 	start_house	: House = null;
 	end_house	: House = null;
 
+	mission_time : number = 30;
+
 	can_start_cable(p : Player) : House {
 	    if (this.houseB || this.houseA) {
 		if (this.houseA.house_hitbox(p)) {
@@ -75,9 +77,12 @@ module states {
 
 	    // create next mission ?
 	    this.create_mission();
-        
-        this.player.housesConnected += 2;
-        this.player.score += 120 < this.game.time.totalElapsedSeconds() - this.player.missionStartTime ? 10 : 120 - (this.game.time.totalElapsedSeconds() - this.player.missionStartTime) + 10;
+            
+            this.player.housesConnected += 2;
+	    var dt = this.game.time.totalElapsedSeconds() - this.player.missionStartTime;
+            this.player.score += this.mission_time - dt;
+	    if (dt < this.mission_time *.1) // bonus
+		this.player.score + 20;
 	}
 
 	
@@ -120,7 +125,7 @@ module states {
 	    this.mission_idx += 2;
 	    this.houseA.hilight_house();
 	    this.houseB.hilight_house();
-        this.player.missionStartTime = this.game.time.totalElapsedSeconds();
+            this.player.missionStartTime = this.game.time.totalElapsedSeconds();
 	}
 
 	reset_mission() {
@@ -164,7 +169,7 @@ module states {
             this.game.physics.p2.friction = 100;
             
             this.collideSound = this.game.add.sound("collide");
-	        this.dingSound = this.game.add.sound("ding");
+	    this.dingSound = this.game.add.sound("ding");
             this.motorSound = this.game.add.sound("motorsound");            
             this.powerupSound = this.game.add.sound("powerup");
             
@@ -193,7 +198,7 @@ module states {
                         } else {
                             lastWasCrossing = true;
                         }
-                                                
+                        
                     } else {
                         var houseGfx = Math.random() > 0.25 ? "house1" : "house2";
                         var sprite =  new House(this, x, y, houseGfx);
@@ -296,6 +301,10 @@ module states {
         }
         
         update() {
+	    var dt = this.game.time.totalElapsedSeconds() - this.player.missionStartTime;
+	    if (dt > this.mission_time) {
+		this.game.state.start("end");
+	    }
 	    if (this.game.input.keyboard.isDown(Phaser.Keyboard.Q)) {
 		this.game.state.start("end");
 	    }
@@ -313,11 +322,8 @@ module states {
                 }
             }
             
-	    // if (this.game.input.keyboard.isDown(Phaser.Keyboard.M))
-	    // 	this.create_mission();
-	    
-            //Update the GUI
-            this.cableUsedText.text = String(this.player.maxCable - this.player.cableUsed * this.player.SEGMENT_LENGTH) + "m";
+            //Update the GUI in the werst possible manner
+            this.cableUsedText.text = String(this.player.maxCable - this.player.cableUsed * this.player.SEGMENT_LENGTH) + "m" + "   " + Math.floor(this.mission_time- dt) + " seconds left " + "Scored " + this.player.score + " points";
             
             this.activeEffectsText.text = "";
             var shouldDisplayEffectIcon: boolean = false;
