@@ -45,6 +45,8 @@ module states {
             this.game.load.audio("powerup", "assets/sound/sound_powerup.wav");
             //this.game.load.audio("motorstrained", "assets/sound/sound_motorbelastet.wav");
 
+	    this.game.load.image("dead", "assets/dead.png");
+
         }
         
         create() {

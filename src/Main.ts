@@ -3,6 +3,7 @@
 /// <reference path="PreloadState.ts" />
 /// <reference path="TitleState.ts" />
 /// <reference path="PlayState.ts" />
+/// <reference path="EndState.ts" />
 
 class Game extends Phaser.Game {
 
@@ -11,8 +12,9 @@ class Game extends Phaser.Game {
         this.state.add("boot", new states.BootState());
         this.state.add("preload", new states.PreloadState());
         // this.state.add("title", new states.TitleState());
-        this.state.add("play", new states.PlayState());
-        
+	var ps = new states.PlayState();
+        this.state.add("play", ps);
+	this.state.add("end", new states.EndState(ps));
         this.state.start("boot");
     }
     

@@ -112,11 +112,21 @@ module states {
 	    this.houseB.hilight_house();
 	}
 
+	reset_mission() {
+	    this.mission_list = null;
+	    this.mission_idx = 0;
+	    this.houseA = null;
+	    this.houseB = null;
+	    this.start_house = null;
+	    this.end_house = null;
+	    this.create_mission();
+	    console.log("resat mission");
+	}
         
         create() {
             this.game.stage.backgroundColor = 0x333333;
             var cars = [];
-
+	    
             this.game.physics.startSystem(Phaser.Physics.P2JS);
             this.game.physics.p2.setImpactEvents(true);
 	    this.HOUSE_MATERIAL = this.game.physics.p2.createMaterial();
@@ -242,7 +252,7 @@ module states {
             this.cableUsedText.strokeThickness = 3;
 
 
-	    this.create_mission();
+	    this.reset_mission();
         }
         
         /*
@@ -270,6 +280,9 @@ module states {
         }
         
         update() {
+	    if (this.game.input.keyboard.isDown(Phaser.Keyboard.Q)) {
+		this.game.state.start("end");
+	    }
             if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP) || this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
                 if (this.game.time.time > this.nextMotorPlay) {
                     this.nextMotorPlay = this.game.time.time + 700;
