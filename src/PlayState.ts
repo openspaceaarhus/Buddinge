@@ -38,7 +38,7 @@ module states {
         
         activeEffectsIcon: Phaser.Sprite;
         activeEffectsText: Phaser.Text;
-
+        
 	houseA		: House = null;
 	houseB		: House = null;
 	start_house	: House = null;
@@ -239,8 +239,10 @@ module states {
             this.emitter.setXSpeed(-25, 25);
             this.emitter.setYSpeed(-25, 25);
 
-            this.badCar = new BadCar(this, this.game.width / 2, 56 * 2 + 16);
-            this.badCar.body.applyForce([-1, 0], this.badCar.x, this.badCar.y);
+            this.badCar = new BadCar(this, -20, 56 * 2 + 16 + this.HOUSE_SPACE * 2 * Math.floor(Math.random() * 5));
+            this.badCar.kill();
+            
+            //this.badCar.body.applyForce([-5, 0], this.badCar.x, this.badCar.y);
             
             this.player = new Player(this, 320, 320);
             
