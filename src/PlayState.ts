@@ -27,8 +27,6 @@ module states {
         
         cableUsedText: Phaser.Text;
 
-
-
 	houseA : Phaser.Sprite = null;
 	houseB : Phaser.Sprite = null;
 	start_house : Phaser.Sprite = null;
@@ -78,6 +76,7 @@ module states {
 	    this.houseB = null;
 	    this.start_house = null;
 	    this.end_house = null;
+	    this.player.remove_cable();
 
 	    // create next mission ?
 	    this.create_mission();

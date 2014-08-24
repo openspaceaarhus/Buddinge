@@ -61,7 +61,6 @@ module states {
 	    // Manually do a check for 
         }
 
-	
 	add_segment() {
             if(this.cableUsed >= this.maxCable)  {
 		return;
@@ -99,8 +98,21 @@ module states {
             this.bringToTop();
 	}
 
-	remove_segment() {
+	remove_cable() {
+	    if (!this.cable) return;
 
+	    // this.cable.forEach(function(segment : Phaser.Sprite) {
+	    // 	var a_emitter = this.game.add.emitter(segment.x, segment.y, 1000);            
+	    // 	a_emitter.makeParticles("cable");
+	    // 	a_emitter.gravity = 200;
+	    // 	a_emitter.start(true, 5000, null, 2);
+	    // }, this, false);
+
+	    this.cable.destroy(true);
+	    this.last_segment = null;
+	    this.last_constraint = null;
+	    this.cable = null;
+	    
 	}
 	
 	add_cable(N : number)  {        
