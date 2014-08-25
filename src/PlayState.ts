@@ -72,6 +72,11 @@ module states {
 	end_mission() {
 
 	    this.dingSound.play();
+
+	    if (this.mission_idx > 0) {
+		this.get_permuted_house(this.mission_idx-2).remove_emitter();
+		this.get_permuted_house(this.mission_idx - 1).remove_emitter();
+	    }
 	    this.get_permuted_house(this.mission_idx).celebrate();
 	    this.get_permuted_house(this.mission_idx + 1).celebrate();
 	    this.mission_idx += 2;
@@ -82,7 +87,7 @@ module states {
             
             this.player.housesConnected += 2;
 	    var dt = this.game.time.totalElapsedSeconds() - this.player.missionStartTime;
-            this.player.score += this.mission_time - dt;
+            this.player.score += Math.floor(this.mission_time - dt);
 	    if (dt < this.mission_time *.1) // bonus
 		this.player.score + 20;
 

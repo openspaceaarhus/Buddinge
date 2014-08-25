@@ -8,6 +8,9 @@ module states {
 	ps : PlayState;
 	high_light : Phaser.Sprite;
 
+	emitter :Phaser.Particles.Arcade.Emitter;
+	
+
         constructor(ps: PlayState, x: number, y: number, housegfx : string) {
             super(ps.game, x, y, housegfx);
 	    this.is_connected = false;
@@ -21,14 +24,20 @@ module states {
 
 	}
 
+
+	remove_emitter() {
+	    if(this.emitter) 
+		this.emitter.destroy();
+	}
+	
 	celebrate() {
-	    var a_emitter = this.game.add.emitter(this.x, this.y, 1000);            
-            a_emitter.makeParticles("connected");
-            a_emitter.gravity = 200;
-	    a_emitter.start(true, 5000, null, 50);
+	    this.emitter = this.game.add.emitter(this.x, this.y, 1000);            
+            this.emitter.makeParticles("connected");
+            this.emitter.gravity = 200;
+	    this.emitter.start(true, 5000, null, 50);
         
-            a_emitter.setScale(0.3, 2, 0.3, 2, 1000, Phaser.Easing.Cubic.InOut, false);  
-            a_emitter.setAlpha(1, 0, 2000);
+            this.emitter.setScale(0.3, 2, 0.3, 2, 1000, Phaser.Easing.Cubic.InOut, false);  
+            this.emitter.setAlpha(1, 0, 2000);
         
 	    this.is_connected = true;
 	    this.high_light.destroy();

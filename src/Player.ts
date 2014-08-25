@@ -135,17 +135,15 @@ module states {
 	remove_cable() {
 	    if (!this.cable) return;
 
-	    var p2 = this.game.physics.p2;
-
 	    // remove last constrain between this.last_segment and car
 	    if(this.last_constraint)
-		p2.removeConstraint(this.last_constraint);
+		this.game.physics.p2.removeConstraint(this.last_constraint);
 
 	    this.cable.destroy(true);
 	    this.last_segment = null;
 	    this.last_constraint = null;
 	    this.cable = null;
-	    p2.getConstraints().forEach(function(c : any) { p2.removeConstraint(c);} );
+	    this.game.physics.p2.getConstraints().forEach(function(c : any) { this.game.physics.p2.removeConstraint(c);} );
 
 	    
 	}
