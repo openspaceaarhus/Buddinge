@@ -71,7 +71,9 @@ var states;
             this.game.load.image("hep", "assets/hep.png");
 
             this.game.load.audio("motorsound", "assets/sound/sound_motor.wav");
-            this.game.load.audio("ding", "assets/sound/sound_haleding.wav");
+
+            // this.game.load.audio("ding", "assets/sound/sound_haleding.wav");
+            this.game.load.audio("connect", "assets/sound/connect.ogg");
             this.game.load.audio("collide", "assets/sound/sound_kollision.wav");
             this.game.load.audio("powerup", "assets/sound/sound_powerup.wav");
 
@@ -547,7 +549,7 @@ var states;
         };
 
         PlayState.prototype.end_mission = function () {
-            this.dingSound.play();
+            this.connectSound.play();
 
             if (this.mission_idx > 0) {
                 this.get_permuted_house(this.mission_idx - 2).remove_emitter();
@@ -643,7 +645,7 @@ var states;
             this.game.physics.p2.friction = 100;
 
             this.collideSound = this.game.add.sound("collide");
-            this.dingSound = this.game.add.sound("ding");
+            this.connectSound = this.game.add.sound("connect");
             this.motorSound = this.game.add.sound("motorsound");
             this.powerupSound = this.game.add.sound("powerup");
 
