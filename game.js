@@ -237,18 +237,16 @@ var states;
             if (!this.cable)
                 return;
 
-            var p2 = this.game.physics.p2;
-
             // remove last constrain between this.last_segment and car
             if (this.last_constraint)
-                p2.removeConstraint(this.last_constraint);
+                this.game.physics.p2.removeConstraint(this.last_constraint);
 
             this.cable.destroy(true);
             this.last_segment = null;
             this.last_constraint = null;
             this.cable = null;
-            p2.getConstraints().forEach(function (c) {
-                p2.removeConstraint(c);
+            this.game.physics.p2.getConstraints().forEach(function (c) {
+                this.game.physics.p2.removeConstraint(c);
             });
         };
 
@@ -299,14 +297,19 @@ var states;
         House.prototype.update = function () {
         };
 
-        House.prototype.celebrate = function () {
-            var a_emitter = this.game.add.emitter(this.x, this.y, 1000);
-            a_emitter.makeParticles("connected");
-            a_emitter.gravity = 200;
-            a_emitter.start(true, 5000, null, 50);
+        House.prototype.remove_emitter = function () {
+            if (this.emitter)
+                this.emitter.destroy();
+        };
 
-            a_emitter.setScale(0.3, 2, 0.3, 2, 1000, Phaser.Easing.Cubic.InOut, false);
-            a_emitter.setAlpha(1, 0, 2000);
+        House.prototype.celebrate = function () {
+            this.emitter = this.game.add.emitter(this.x, this.y, 1000);
+            this.emitter.makeParticles("connected");
+            this.emitter.gravity = 200;
+            this.emitter.start(true, 5000, null, 50);
+
+            this.emitter.setScale(0.3, 2, 0.3, 2, 1000, Phaser.Easing.Cubic.InOut, false);
+            this.emitter.setAlpha(1, 0, 2000);
 
             this.is_connected = true;
             this.high_light.destroy();
@@ -545,6 +548,11 @@ var states;
 
         PlayState.prototype.end_mission = function () {
             this.dingSound.play();
+
+            if (this.mission_idx > 0) {
+                this.get_permuted_house(this.mission_idx - 2).remove_emitter();
+                this.get_permuted_house(this.mission_idx - 1).remove_emitter();
+            }
             this.get_permuted_house(this.mission_idx).celebrate();
             this.get_permuted_house(this.mission_idx + 1).celebrate();
             this.mission_idx += 2;
@@ -554,7 +562,7 @@ var states;
 
             this.player.housesConnected += 2;
             var dt = this.game.time.totalElapsedSeconds() - this.player.missionStartTime;
-            this.player.score += this.mission_time - dt;
+            this.player.score += Math.floor(this.mission_time - dt);
             if (dt < this.mission_time * .1)
                 this.player.score + 20;
 
@@ -809,6 +817,7 @@ var states;
             // check the cable end
             if (this.end_house) {
                 if (this.end_house.house_hitbox(this.player)) {
+                    this.end_house = null;
                     this.end_mission();
                 }
             }
