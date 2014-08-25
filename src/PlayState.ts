@@ -352,6 +352,7 @@ module states {
 	    // check the cable end
 	    if (this.end_house) {
 		if (this.end_house.house_hitbox(this.player)) {
+		    this.end_house = null;
 		    this.end_mission();
 		}
 	    }
