@@ -513,51 +513,53 @@ var states;
             this.HOUSE_SIZE = 48;
             this.HOUSE_SPACE = 56;
             this.lastPowerUpSpawn = 0;
-            this.houseA = null;
-            this.houseB = null;
-            this.start_house = null;
             this.end_house = null;
             this.mission_time = 30;
             this.mission_list = null;
             this.mission_idx = 0;
         }
+        PlayState.prototype.get_permuted_house = function (idx) {
+            return this.houseGroup.getAt(this.mission_list[idx]);
+        };
+
         PlayState.prototype.can_start_cable = function (p) {
-            if (this.houseB || this.houseA) {
-                if (this.houseA.house_hitbox(p)) {
-                    return this.houseA;
-                } else if (this.houseB.house_hitbox(p)) {
-                    return this.houseB;
+            var houseA = this.get_permuted_house(this.mission_idx);
+            var houseB = this.get_permuted_house(this.mission_idx + 1);
+            if (houseB || houseA) {
+                if (houseA.house_hitbox(p)) {
+                    return houseA;
+                } else if (houseB.house_hitbox(p)) {
+                    return houseB;
                 }
             }
             return null;
         };
 
         PlayState.prototype.set_start_house = function (house) {
-            this.start_house = house;
-            this.end_house = this.houseA == house ? this.houseB : this.houseA;
+            // we just need to know where to end ie attach to start house, must go to end_house
+            if (this.get_permuted_house(this.mission_idx) == house)
+                this.end_house = this.get_permuted_house(this.mission_idx + 1);
+            else
+                this.end_house = this.get_permuted_house(this.mission_idx);
         };
 
         PlayState.prototype.end_mission = function () {
-            this.houseA = null;
-            this.houseB = null;
-
             this.dingSound.play();
-            this.start_house.celebrate();
-            this.end_house.celebrate();
+            this.get_permuted_house(this.mission_idx).celebrate();
+            this.get_permuted_house(this.mission_idx + 1).celebrate();
+            this.mission_idx += 2;
 
             // make ready for next mission
-            this.start_house = null;
-            this.end_house = null;
             this.player.remove_cable();
-
-            // create next mission ?
-            this.create_mission();
 
             this.player.housesConnected += 2;
             var dt = this.game.time.totalElapsedSeconds() - this.player.missionStartTime;
             this.player.score += this.mission_time - dt;
             if (dt < this.mission_time * .1)
                 this.player.score + 20;
+
+            // create next mission
+            this.create_mission();
         };
 
         PlayState.prototype.shuffle = function (array) {
@@ -577,39 +579,31 @@ var states;
         };
 
         PlayState.prototype.create_mission = function () {
-            if (this.houseB || this.houseA)
-                return;
+            // console.log("create mission " + this.mission_idx);
             var mission_list = this.mission_list;
             if (!mission_list) {
                 mission_list = new Array();
                 for (var i = 0; i < this.houseGroup.countLiving(); i++) {
                     mission_list[mission_list.length] = i;
                 }
-                mission_list = this.shuffle(mission_list);
+                this.mission_list = this.shuffle(mission_list);
             }
 
-            if (this.mission_idx + 2 >= mission_list.length) {
-                console.log("no more missions on this level");
+            if (this.mission_idx + 2 > mission_list.length) {
+                // console.log("no more missions on this level");
                 this.game.state.start("end");
                 return;
             }
-            this.houseA = this.houseGroup.getAt(mission_list[this.mission_idx]);
-            this.houseB = this.houseGroup.getAt(mission_list[this.mission_idx + 1]);
-            this.mission_idx += 2;
-            this.houseA.hilight_house();
-            this.houseB.hilight_house();
+            this.get_permuted_house(this.mission_idx + 0).hilight_house();
+            this.get_permuted_house(this.mission_idx + 1).hilight_house();
             this.player.missionStartTime = this.game.time.totalElapsedSeconds();
         };
 
         PlayState.prototype.reset_mission = function () {
             this.mission_list = null;
             this.mission_idx = 0;
-            this.houseA = null;
-            this.houseB = null;
-            this.start_house = null;
             this.end_house = null;
             this.create_mission();
-            console.log("resat mission");
         };
 
         PlayState.prototype.create = function () {
@@ -742,7 +736,6 @@ var states;
             this.activeEffectsText.stroke = "#000000";
             this.activeEffectsText.strokeThickness = 1;
 
-            this.nextTextUpdateTime = this.game.time.time;
             this.reset_mission();
         };
 
@@ -772,9 +765,6 @@ var states;
             if (dt > this.mission_time) {
                 this.game.state.start("end");
             }
-            if (this.game.input.keyboard.isDown(Phaser.Keyboard.Q)) {
-                this.game.state.start("end");
-            }
             if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP) || this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
                 if (this.game.time.time > this.nextMotorPlay) {
                     this.nextMotorPlay = this.game.time.time + 700;
@@ -789,31 +779,35 @@ var states;
                 }
             }
 
-            //Update the GUI in the werst possible manner
-            if (this.game.time.time > this.nextTextUpdateTime) {
-                this.cableUsedText.text = String(this.player.maxCable - this.player.cableUsed * this.player.SEGMENT_LENGTH) + "m" + "   " + Math.floor(this.mission_time - dt) + " seconds left " + "Scored " + this.player.score + " points";
-
-                this.activeEffectsText.text = "";
-                var shouldDisplayEffectIcon = false;
-                for (var i = 1; i <= states.PowerUp.NUMBER_OF_POWERUPS; i++) {
-                    if (this.player.powerUpTakenTime[i] != 0) {
-                        shouldDisplayEffectIcon = true;
-                        var temp = "";
-                        switch (i) {
-                            case 1:
-                                temp += "FASTER ";
-                                break;
-                        }
-                        this.activeEffectsText.text += temp;
-                    }
-                }
-
-                this.activeEffectsIcon.alpha = Number(shouldDisplayEffectIcon);
-                this.nextTextUpdateTime = this.game.time.time + 200;
+            // secret keykodes for debugging
+            if (this.game.input.keyboard.isDown(Phaser.Keyboard.Y)) {
+                this.end_mission();
+            }
+            if (this.game.input.keyboard.isDown(Phaser.Keyboard.Q)) {
+                this.game.state.start("end");
             }
 
+            //Update the GUI in the werst possible manner
+            this.cableUsedText.text = String(this.player.maxCable - this.player.cableUsed * this.player.SEGMENT_LENGTH) + "m" + "   " + Math.floor(this.mission_time - dt) + " seconds left " + "Scored " + this.player.score + " points";
+
+            this.activeEffectsText.text = "";
+            var shouldDisplayEffectIcon = false;
+            for (var i = 1; i <= states.PowerUp.NUMBER_OF_POWERUPS; i++) {
+                if (this.player.powerUpTakenTime[i] != 0) {
+                    shouldDisplayEffectIcon = true;
+                    var temp = "";
+                    switch (i) {
+                        case 1:
+                            temp += "FASTER ";
+                            break;
+                    }
+                    this.activeEffectsText.text += temp;
+                }
+            }
+            this.activeEffectsIcon.alpha = Number(shouldDisplayEffectIcon);
+
             // check the cable end
-            if (this.start_house) {
+            if (this.end_house) {
                 if (this.end_house.house_hitbox(this.player)) {
                     this.end_mission();
                 }
@@ -827,7 +821,6 @@ var states;
         return PlayState;
     })(Phaser.State);
     states.PlayState = PlayState;
-
     function createText(x, y, color, size, text) {
         var style = { font: "65px Arial", fill: "#000000", align: "center" };
         var _text = game.add.text(x, y, text, style);
@@ -852,8 +845,6 @@ var states;
             this.emitter = this.ps.game.add.emitter(this.ps.game.width / 2, 50, 1000);
             this.emitter.makeParticles("car");
             this.emitter.gravity = 50;
-
-            //this. emitter.setScale(0.3, 2, 0.3, 2, 1000, Phaser.Easing.Cubic.InOut, false);
             this.emitter.setAlpha(0.25, 1.0, 2000);
             this.emitter.setXSpeed(-25, 25);
             this.emitter.setYSpeed(-25, 25);
@@ -862,13 +853,13 @@ var states;
             this.createText(20, 100, "#00FF00", 24, "Connected:  " + (this.ps.player.housesConnected) + " houses");
             this.createText(20, 200, "#00FF00", 24, "Scored:     " + (this.ps.player.score));
             this.createText(20, 300, "#00FF00", 24, "Played for: " + Math.floor((this.ps.game.time.totalElapsedSeconds() - this.ps.player.gameStarted)) + " seconds");
-            this.createText(20, 400, "#00FF00", 24, "Cable used: " + this.ps.player.cableUsed + " meters of cable");
+            this.createText(20, 400, "#00FF00", 24, "Cable used: " + this.ps.player.cableUsed + " meters");
             this.createText(20, 500, "#FF0000", 24, "Press to play again");
         };
 
         EndState.prototype.update = function () {
             // if (this.game.input.keyboard.isDown(Phaser.Keyboard.ANY)) fadeOut();
-            this.emitter.x = (this.emitter.x + 13) % this.ps.game.width;
+            this.emitter.x = (this.emitter.x + 13 * Math.random()) % this.ps.game.width;
         };
 
         EndState.prototype.createText = function (x, y, color, size, text) {
