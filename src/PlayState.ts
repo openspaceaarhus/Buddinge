@@ -29,7 +29,7 @@ module states {
         collideSound: Phaser.Sound;
         motorSound: Phaser.Sound;
         powerupSound: Phaser.Sound;
-	dingSound: Phaser.Sound;
+	connectSound: Phaser.Sound;
         
         nextMotorPlay: number;
         nextPuff: number;
@@ -71,7 +71,7 @@ module states {
 
 	end_mission() {
 
-	    this.dingSound.play();
+	    this.connectSound.play();
 
 	    if (this.mission_idx > 0) {
 		this.get_permuted_house(this.mission_idx-2).remove_emitter();
@@ -174,7 +174,7 @@ module states {
             this.game.physics.p2.friction = 100;
             
             this.collideSound = this.game.add.sound("collide");
-	    this.dingSound = this.game.add.sound("ding");
+	    this.connectSound = this.game.add.sound("connect");
             this.motorSound = this.game.add.sound("motorsound");            
             this.powerupSound = this.game.add.sound("powerup");
             

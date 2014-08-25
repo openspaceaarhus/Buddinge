@@ -4,3 +4,21 @@ node_modules
 
 *~
 
+/game.tar.gz
+/root/LICENSE
+/root/README.md
+/root/assets/OSAA_LOGO.png
+/root/assets/connect-old1.wav
+/root/assets/connect.ogg
+/root/assets/connect.wav
+/root/assets/jump.ogg
+/root/assets/jump.wav
+/root/assets/sound/connect.wav
+/root/game.js
+/root/gulpfile.js
+/root/jacob@laila.5310:1408975292
+/root/package.json
+/root/phaser.d.ts
+/root/phaser.js
+/root/phaser.min.js
+/src/Trail.ts
