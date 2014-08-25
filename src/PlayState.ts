@@ -45,7 +45,6 @@ module states {
 	mission_time : number = 30;
 
 	get_permuted_house(idx : number) : House {
-	    console.log("looking for house " + idx + " returning " + this.mission_list[idx]);
 	    return this.houseGroup.getAt(this.mission_list[idx]);
 	}
 	
@@ -113,7 +112,7 @@ module states {
 	mission_idx : number = 0;
 	
 	create_mission() {
-	    console.log("create mission " + this.mission_idx);
+	    // console.log("create mission " + this.mission_idx);
 	    var mission_list = this.mission_list;
 	    if (! mission_list) {
 		mission_list = new Array<number>();
@@ -124,7 +123,7 @@ module states {
 	    }
 
 	    if (this.mission_idx + 2 > mission_list.length) {
-		console.log("no more missions on this level");
+		// console.log("no more missions on this level");
 		this.game.state.start("end");
 		return;
 	    }
@@ -320,17 +319,15 @@ module states {
                 }
             }
 
-	    // secret keykodes for debguggin
+	    // secret keykodes for debugging
 	    if (this.game.input.keyboard.isDown(Phaser.Keyboard.Y)) {
 		this.end_mission();
 	    }
 	    if (this.game.input.keyboard.isDown(Phaser.Keyboard.Q)) {
 		this.game.state.start("end");
 	    }
-
-	    
             
-            //update the GUI in the werst possible manner
+            //Update the GUI in the werst possible manner
             this.cableUsedText.text = String(this.player.maxCable - this.player.cableUsed * this.player.SEGMENT_LENGTH) + "m" + "   " + Math.floor(this.mission_time- dt) + " seconds left " + "Scored " + this.player.score + " points";
             
             this.activeEffectsText.text = "";

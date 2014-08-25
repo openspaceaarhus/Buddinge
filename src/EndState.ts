@@ -20,7 +20,6 @@ module states {
 	    this.emitter = this.ps.game.add.emitter(this.ps.game.width/2, 50, 1000);            
             this.emitter.makeParticles("car");
             this.emitter.gravity = 50;
-            //this. emitter.setScale(0.3, 2, 0.3, 2, 1000, Phaser.Easing.Cubic.InOut, false);  
             this.emitter.setAlpha(0.25, 1.0, 2000);
             this.emitter.setXSpeed(-25, 25);
             this.emitter.setYSpeed(-25, 25);
@@ -36,7 +35,7 @@ module states {
 
 	update() {
 	    // if (this.game.input.keyboard.isDown(Phaser.Keyboard.ANY)) fadeOut();
-	    this.emitter.x  = (this.emitter.x + 13) % this.ps.game.width;
+	    this.emitter.x  = (this.emitter.x + 13 * Math.random()) % this.ps.game.width;
 	}
 
 	createText(x: number, y: number, color: Phaser.Color, size: number, text: string)  {
