@@ -13,6 +13,15 @@ gulp_compile() {
 #checkout version
 git checkout $VERSION
 
+# perhaps create a name
+if [[ -z "$NAME" ]]
+then
+    NAME=$(git log --pretty="%h-%s" -n 1 | sed 's/ /_/g' - )
+fi
+
+#if we are in scripts dir go back
+cd ..
+
 #compile
 gulp_compile
 
@@ -21,7 +30,7 @@ DIR="$ROOT/$NAME"
 mkdir -p $DIR
 cp -R build/* $DIR
 
-COMMENT=$(git log --pretty=oneline -n 1)
+COMMENT=$(git log --pretty="%cd %aN %s" -n 1)
 
 # make a note on som html
 cat << EOF > $DIR/index.html
