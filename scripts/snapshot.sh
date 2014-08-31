@@ -16,7 +16,7 @@ git checkout $VERSION
 # perhaps create a name
 if [[ -z "$NAME" ]]
 then
-    NAME=$(git log --pretty="%h-%s" -n 1 | sed 's/ /_/g' - )
+    NAME=$(git log --pretty="%ci-%h-%s" -n 1 | sed 's/ /_/g' - )
 fi
 
 #if we are in scripts dir go back
