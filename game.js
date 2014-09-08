@@ -175,7 +175,7 @@ var states;
                 if (!this.cable) {
                     // check if this is a valid place to start a connection?
                     var start = this.ps.can_start_cable(this);
-                    if (start) {
+                    if (start && (this.cableUsed < this.maxCable)) {
                         this.add_cable(1);
                         this.ps.set_start_house(start);
                     }
